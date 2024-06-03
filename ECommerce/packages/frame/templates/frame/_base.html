@@ -1,0 +1,28 @@
+{% load tz %} {% load static %} {% load zstatic %}
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <link rel="icon" href="{{ frame_config.fav_icon }}">
+    <script defer="defer" src="{% zstatic 'packages/frame/js/frame.1.0.0.min.js' %}"></script>
+    {% block head %} {% endblock %}
+</head>
+
+<body>
+    {% include 'session_security/all.html' %}
+    <div class="overlay-spinner frame-loader"></div>
+    <z-frame config="{{ frame_config }}" app_theme_config="{{ app_theme_config }}">
+        <div slot="frame-page" class="frame-page">
+            {% block page_content %} {% endblock %}
+            {% block js %} {% endblock %}
+        </div>
+    </z-frame>
+    {% for script in scripts %}
+    {{ script|safe }}
+    {% endfor %}
+    <script>var frame_config = JSON.parse("{{frame_config|escapejs}}");</script>
+</body>
+
+</html>

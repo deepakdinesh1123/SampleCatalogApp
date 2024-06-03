@@ -1,0 +1,2039 @@
+{% extends 'frame/_base.html' %}
+{% load crispy_forms_tags %}
+{% load zstatic %} 
+
+{% block head %}
+    <title>{{page_title}}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&family=Source+Code+Pro:wght@400;600;700&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.css" />
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-1.13.6/af-2.6.0/b-2.4.2/b-colvis-2.4.2/b-html5-2.4.2/b-print-2.4.2/cr-1.7.0/date-1.5.1/fc-4.3.0/fh-3.4.0/kt-2.10.0/r-2.5.0/rg-1.4.1/rr-1.4.1/sc-2.2.0/sb-1.6.0/sp-2.2.0/sl-1.7.0/sr-1.3.0/datatables.min.css" rel="stylesheet">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+    <script src="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-1.13.6/af-2.6.0/b-2.4.2/b-colvis-2.4.2/b-html5-2.4.2/b-print-2.4.2/cr-1.7.0/date-1.5.1/fc-4.3.0/fh-3.4.0/kt-2.10.0/r-2.5.0/rg-1.4.1/rr-1.4.1/sc-2.2.0/sb-1.6.0/sp-2.2.0/sl-1.7.0/sr-1.3.0/datatables.min.js"></script>
+    
+    <script src="https:////cdn.datatables.net/plug-ins/1.13.6/pagination/input.js"></script>
+    
+    <link href="https://cdn.datatables.net/fixedcolumns/4.3.0/css/fixedColumns.bootstrap5.min.css"></link>
+    <script src="https://cdn.datatables.net/fixedcolumns/4.3.0/js/dataTables.fixedColumns.min.js"></script>
+    <script src="https://unpkg.com/@popperjs/core@2"></script> 
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&family=Source+Code+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tinycolor/1.6.0/tinycolor.min.js"
+        integrity="sha512-AvCfbOQzCVi2ctVWF4m89jLwTn/zVPJuS7rhiKyY3zqyCdbPqtvNa0I628GJqPytbowfFjkAGOpq85E5kQc40Q=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+    <script src="https://cdn.jsdelivr.net/npm/jquery-toast-plugin@1.3.2/dist/jquery.toast.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-toast-plugin@1.3.2/dist/jquery.toast.min.css">
+
+    <link rel="stylesheet" href="{% zstatic 'packages/crud/css/style.css' %}">
+    
+    <!-- TODO: handle custom css -->
+    {% block custom_css %}
+   
+    {% endblock %}
+
+{% endblock %}
+
+{% block page_content %}
+<style> 
+
+        .cards-container{
+            display: none;
+        }
+        .offcanvas-bottom{
+            height: fit-content !important;
+            max-height:80% !important;
+        }
+        .drawer-handle{
+            width: 65px;
+            height: 4px;
+            border-radius: 2px;
+            background:#DDE2E5;
+        }
+        .drawer-handle-wrapper{
+            display: flex;
+            width: 100%;
+            justify-content: center;
+            padding: 4px 0px 0px 0px;
+        }
+        .details-offcanvas-body{
+            padding: 48px 24px 56px 24px;
+            display: flex;
+            flex-direction: column;
+            gap:12px;
+        }
+        .detail-title{
+            color: var(--neutral-dark-dark-700, #212429);
+            font-family: Lato;
+            font-size: 16px;
+            font-style: normal;
+            font-weight: 600;
+            line-height: 24px; 
+            letter-spacing: 0.2px;
+        }
+        .detail-status{
+            color: #1C1E27;
+            font-family: Lato;
+            font-size: 12px;
+            font-style: normal;
+            font-weight: 400;
+            line-height: 16px; 
+            letter-spacing: 0.2px;
+        }
+        .general-details-container{
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .general-details{
+            display: flex;
+            gap: 8px;
+        }
+        .detail-label{
+            width: 140px;
+            color: var(--neutral-mid-mid-500, #6C747D);
+            font-family: Lato;
+            font-size: 14px;
+            font-style: normal;
+            font-weight: 400;
+            line-height: 20px; 
+            letter-spacing: 0.2px;
+        }
+        .detail-value{
+            text-overflow: ellipsis;
+            overflow: hidden;
+            color: var(--neutral-dark-black, #000);
+            font-family: Lato;
+            font-size: 14px;
+            font-style: normal;
+            font-weight: 400;
+            line-height: 20px; 
+            letter-spacing: 0.2px;
+        }
+        th.each-cell{
+            padding: 12px 30px 16px 24px !important;
+            min-width: fit-content;
+            white-space: nowrap;
+        }
+        th.sorting{
+            padding: 12px 36px 16px 24px !important;
+            min-width: fit-content;
+            white-space: nowrap;
+        }
+        table.dataTable thead > tr > th.sorting:after, table.dataTable thead > tr > th.sorting:before{
+            display: none !important;
+        } 
+        .asc_desc_sort_wrapper{
+            display: inline-flex;
+            flex-direction: column;
+            gap:0px;
+            position: relative;
+            left:6px;
+            top:-4px;
+            white-space: nowrap;
+        }
+    @media (max-width:640px)  {
+        .dataTables_scroll{
+            height: 100%;
+        }
+        .download-button{
+            display: none !important;
+        }
+        .cards-container{
+            display: flex;
+            flex-direction: column;
+            gap:12px;
+            padding: 16px;
+            overflow: auto;
+            margin-bottom: 100px;
+        }
+        .card{
+            display: flex;
+            flex-direction: column;
+            gap:12px;
+            border-radius: 6px;
+            border: 1px solid var(--neutral-light-light-200, #DDE2E5);
+            background: #FFF;
+            box-shadow: 0px 2px 16px 0px rgba(0, 0, 0, 0.08);
+            padding: 16px 24px;
+        }
+        .card-title{
+            color: #212429;   
+            font-family: Lato;
+            font-size: 16px;
+            font-style: normal;
+            font-weight: 400;
+            line-height: 20px;
+            letter-spacing: 0.2px;
+        }
+        .card-info-container{
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .card-info{
+            display: flex;
+            gap:8px;
+        }
+        .card-info-label{
+            color:  #6C747D;
+            font-family: Lato;
+            font-size: 14px;
+            font-style: normal;
+            font-weight: 400;
+            line-height: 20px; 
+            letter-spacing: 0.2px;
+            
+
+        }
+        .card-info-value{
+            color: #000;
+            font-family: Lato;
+            font-size: 14px;
+            font-style: normal;
+            font-weight: 400;
+            line-height: 20px;
+            letter-spacing: 0.2px;
+        }
+        .card-status,.detail-status{
+            width: fit-content;
+            background-color: #A3ABB1;
+            /* color: #1C1E27; */
+            color: #fff;
+            font-family: Lato;
+            font-size: 12px;
+            font-style: normal;
+            font-weight: 400;
+            line-height: 16px;
+            letter-spacing: 0.2px;
+            border-radius: 15px;
+            padding: 3px 8px;
+        }
+        .dataTables_scrollHead{
+            display:none !important;
+        }
+        .dataTables_scrollBody{
+            display:none !important;
+        }
+
+        .table-bottom {
+            width: 100%;
+            position: fixed;
+            border-bottom: 0px solid #f0f3f4;
+        }
+      
+    }
+    </style> 
+
+<form method="post">
+    {% csrf_token %}
+</form>
+
+<div class="page-title-bar">
+    <div>
+        <h2 class="page-title"></h2>
+    </div>
+    {% if has_add_perm %}
+        <div>     
+            <button type="button" data-modal="page_add_modal" class="page-add-button">
+                <span class="page-add-button-label">
+                    {{add_btn_title}}
+                </span>
+                <div class="page-add-button-icon">
+
+                </div>
+            </button>
+        </div>
+    {% endif %}
+</div>
+<div class="overlay-spinner" style="display: none;"></div>
+<div id="page_add_modal" class="modal-overlay"  style="display:none;">
+    <div class="modal-content">
+        <button type="button" data-modal="page_add_modal" class="modal-close">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <g clip-path="url(#clip0_5158_6104)">
+                    <path d="M17.7213 1.22117L10.5168 8.42571C10.2219 8.72061 9.75409 8.72061 9.48417 8.42571L2.27865 1.22117C1.98375 0.926275 1.51593 0.926275 1.24601 1.22117C0.951112 1.51607 0.951112 1.9839 1.24601 2.25382L8.45153 9.45933C8.74643 9.75423 8.74643 10.2221 8.45153 10.492L1.22117 17.7213C0.926275 18.0162 0.926275 18.4841 1.22117 18.754C1.51607 19.0489 1.9839 19.0489 2.25382 18.754L9.45933 11.5485C9.75423 11.2536 10.2221 11.2536 10.492 11.5485L17.7213 18.7788C18.0162 19.0737 18.4841 19.0737 18.754 18.7788C19.0489 18.4839 19.0489 18.0161 18.754 17.7462L11.5736 10.5158C11.2787 10.2209 11.2787 9.7531 11.5736 9.48319L18.7791 2.27767C19.074 1.98277 19.074 1.51494 18.7791 1.24503C18.4842 0.950129 18.0173 0.950129 17.7214 1.22101L17.7213 1.22117Z" fill="black" stroke="black" stroke-width="0.4"/>
+                </g>
+                <defs>
+                    <clipPath id="clip0_5158_6104">
+                    <rect width="20" height="20" fill="white"/>
+                    </clipPath>
+                </defs>
+            </svg>
+        </button>
+        <div id="zelthy-dynamic-form" class="zelthy-dynamic-form" style="height: 100%"></div>
+        {% comment %} <form id="objectcreateform" action="" method="post"  enctype="multipart/form-data" class="modal-content-form">
+            
+            <div class="modal-content-form-body complete-hidden-scroll-style">
+                {% crispy form  %}<br>
+                <input type="hidden" name="form" value="objectcreateform">
+                <button type="submit" class="modal-form-submit-button">Submit</button>                 
+            </div>
+        </form> {% endcomment %}
+    </div>
+</div>
+
+<div id="row_actions_form_modal" class="modal-overlay"  style="display:none;">
+    <div class="modal-content">
+        <button type="button" data-modal="row_actions_form_modal" class="modal-close">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <g clip-path="url(#clip0_5158_6104)">
+                    <path d="M17.7213 1.22117L10.5168 8.42571C10.2219 8.72061 9.75409 8.72061 9.48417 8.42571L2.27865 1.22117C1.98375 0.926275 1.51593 0.926275 1.24601 1.22117C0.951112 1.51607 0.951112 1.9839 1.24601 2.25382L8.45153 9.45933C8.74643 9.75423 8.74643 10.2221 8.45153 10.492L1.22117 17.7213C0.926275 18.0162 0.926275 18.4841 1.22117 18.754C1.51607 19.0489 1.9839 19.0489 2.25382 18.754L9.45933 11.5485C9.75423 11.2536 10.2221 11.2536 10.492 11.5485L17.7213 18.7788C18.0162 19.0737 18.4841 19.0737 18.754 18.7788C19.0489 18.4839 19.0489 18.0161 18.754 17.7462L11.5736 10.5158C11.2787 10.2209 11.2787 9.7531 11.5736 9.48319L18.7791 2.27767C19.074 1.98277 19.074 1.51494 18.7791 1.24503C18.4842 0.950129 18.0173 0.950129 17.7214 1.22101L17.7213 1.22117Z" fill="black" stroke="black" stroke-width="0.4"/>
+                </g>
+                <defs>
+                    <clipPath id="clip0_5158_6104">
+                    <rect width="20" height="20" fill="white"/>
+                    </clipPath>
+                </defs>
+            </svg>
+        </button>
+        <div id="zelthy-dynamic-form" class="zelthy-dynamic-form" style="height: 100%"></div>
+        {% comment %} <form id="objectcreateform" action="" method="post"  enctype="multipart/form-data" class="modal-content-form" style="gap: 0;">
+            <h3 class="modal-title" style="padding-top: 32px; padding-left: 32px;">
+                Row Action Form
+            </h3>
+            
+            <div class="modal-content-form-body" style="padding-left: 32px; padding-right: 32px; padding-bottom: 32px;">
+                {% crispy form  %}<br>
+                <input type="hidden" name="form" value="objectcreateform">
+                <button type="submit" class="modal-form-submit-button" style="border: 1px solid black;">Submit</button>                 
+            </div>
+        </form> {% endcomment %}
+
+    </div>
+</div>
+
+<div class="row-action-simple-dialog-overlay">
+    <div class="row-action-simple-dialog">
+        <form class="row-action-simple-dialog-form">
+            <div class="row-action-simple-dialog-content">
+                <h4 class="row-action-simple-dialog-title"></h4>
+                <p class="row-action-simple-dialog-description">
+                </p>
+            </div>
+            <div class="row-action-simple-dialog-ctas">
+                <button type="button" class="secondary-button close-button">Cancel</button>
+                <button type="submit" class="primary-button">Confirm</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="table-outer-box" style="height: 100%;">
+    <!-- TODO: Handle styling  -->
+    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+        {% block table-top %} {% endblock %} 
+    </div>
+    <table id="zelthytable" class="stripe hover order-column" style="width: 100%">
+                 
+        <!-- <div class="cards-container">
+            <div class="card">
+                <span class="title">Marvin McKinney</span>
+                <div class="card-info-container">
+
+                    <div class="card-info">
+                        <div class="card-info-label">User ID:</div>
+                        <div class="card-info-value">5045</div>
+                    </div>
+                    <div class="card-info">
+                        <div class="card-info-label">Date:</div>
+                        <div class="card-info-value">21 Sep, 2023</div>
+
+                    </div>
+                </div>
+                <div class="card-status"> Completed </div>
+            </div>
+        </div> -->
+    </table>
+    <div class="offcanvas offcanvas-bottom" tabindex="-1" id="offcanvasBottom" aria-labelledby="offcanvasBottomLabel">
+        <div class="drawer-handle-wrapper"><div class="drawer-handle"></div></div>
+        <!-- <div class="offcanvas-header">
+          <h5 class="offcanvas-title" id="offcanvasBottomLabel">Details View</h5>
+          <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div> -->
+        <div class="details-offcanvas-body">
+      
+
+          
+        </div>
+      </div>
+     <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+        {% block table-bottom %} {% endblock %}
+      </div>
+</div>
+
+<script>
+    var csrf_token = "{{ csrf_token }}";
+    var has_export_permission = "{{has_export_perm}}"
+    if (typeof URLParams === 'undefined') {
+        var URLParams = "";
+    }
+</script>
+{% block custom_js_before_base_script %} {% endblock %}
+<script>
+   
+  
+    let window_size = ""
+    let pageTitle = "{{page_title}}"
+    $(".page-title").html(pageTitle);
+    $(window).width() < 600 ? window_size = "mobile" : window_size = "desktop"
+    function ZToast(type, title, message, duration){
+        $.toast({
+        text : `<div class="z-toast-node ${{"error": "z-toast-error", "success": "z-toast-success", "warning": "z-toast-warning"}[type]}">
+                <h3 class="title">
+                    ${title}
+                </h3>
+                <span class="message">
+                    ${message}
+                </span>
+            </div>`,
+        hideAfter : duration,
+        });
+
+
+        $(document).find(".jq-toast-single").find(".close-jq-toast-single").html(`<svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <g id="Icon/Navigation/16px/Close" clip-path="url(#clip0_1917_1245)">
+            <path id="Vector" d="M10.5041 0.879019L6.30147 5.08166C6.12945 5.25369 5.85655 5.25369 5.6991 5.08166L1.49588 0.879019C1.32386 0.706994 1.05096 0.706994 0.893507 0.879019C0.721482 1.05104 0.721482 1.32394 0.893507 1.48139L5.09673 5.68461C5.26875 5.85664 5.26875 6.12953 5.09673 6.28699L0.879019 10.5041C0.706994 10.6761 0.706994 10.949 0.879019 11.1065C1.05104 11.2785 1.32394 11.2785 1.48139 11.1065L5.68461 6.90327C5.85664 6.73125 6.12954 6.73125 6.28699 6.90327L10.5041 11.121C10.6761 11.293 10.949 11.293 11.1065 11.121C11.2785 10.949 11.2785 10.6761 11.1065 10.5186L6.91791 6.3009C6.74588 6.12887 6.74588 5.85598 6.91791 5.69853L11.1211 1.49531C11.2932 1.32328 11.2932 1.05038 11.1211 0.892933C10.9491 0.720908 10.6768 0.720908 10.5042 0.878924L10.5041 0.879019Z" fill="#6C747D" stroke="#6C747D" stroke-width="0.4"/>
+            </g>
+            <defs>
+            <clipPath id="clip0_1917_1245">
+            <rect width="12" height="12" fill="white"/>
+            </clipPath>
+            </defs>
+            </svg>
+        `);
+    }
+    
+    var table_metadata = {{table_metadata|safe}};
+    const config = {{frame_config|safe}};
+    const app_theme_config = {{app_theme_config|safe}};
+
+
+    function mapDataForResponsiveDevice(responseData, tableMetadata) {
+        if (responseData.data.length === 0) return []
+        const columns = tableMetadata.columns;
+
+        const mappedData = responseData.data.map(dataItem => {
+            const mappedItem = {
+                "title": dataItem["field_title"] ? dataItem["field_title"]  : "",
+                "status_color": dataItem["workflow_status"] && dataItem["workflow_status"]["status_color"] ? dataItem["workflow_status"]["status_color"] : "", 
+                "status_label": dataItem["workflow_status"] && dataItem["workflow_status"]["status_label"] ? dataItem["workflow_status"]["status_label"] : "" 
+
+                
+            };
+
+            for (const column of columns) {
+                const { name, display_name } = column;
+                if (dataItem.hasOwnProperty(name) && display_name) {
+                    mappedItem[display_name] = dataItem[name];
+                }
+            }
+            // Include primaryData if available
+            mappedItem.cardInfo = {}
+            for (const data of tableMetadata["card_primary_fields"]){
+                if(dataItem.hasOwnProperty(data)){
+                    mappedItem.cardInfo[data] = dataItem[data]
+                }
+            }
+            return mappedItem;
+        });
+        return mappedData;
+    }
+
+    
+    // Example usage
+
+    // let app_theme_config = {
+    //     "color": {
+    //         "primary": "#5048ED",
+    //         "secondary": "#E1D6AE",
+    //         "background": "#ffffff"
+    //     },
+    //     "button": {
+    //         "color": "#ffffff",
+    //         "background": "#5048ED",
+    //         "border_color": "#C7CED3",
+    //         "border_radius": "10"
+    //     },
+    //     "typography": {
+    //         "font_family": "Open Sans"
+    //     }
+    // }
+
+    // let config = {
+    //     "menu": [],
+    //     "config": {
+    //         "color": {
+    //             "accent": "#DDE2E5",
+    //             "header": "#FFFFFF",
+    //             "primary": "#5048ED",
+    //             "sidebar": "#E1D6AE",
+    //             "secondary": "#E1D6AE",
+    //             "background": "#FFFFFF",
+    //             "typography": "#212429",
+    //             "headerBorder": "#DDE2E5"
+    //         }
+    //     },
+    //     "profile": {
+    //         "name": "AnonymousUsers",
+    //         "roles": [],
+    //         "current_role": "AnonymousUsers"
+    //     },
+    //     "logo": null,
+    //     "fav_icon": null
+    // }
+
+    let newAppThemeConfig = {
+        "color": {
+            "accent": app_theme_config?.color?.primary || config?.config?.color?.primary || "#DDE2E5",
+            "header": "#FFFFFF",
+            "primary": app_theme_config?.color?.primary || config?.config?.color?.primary ||  "#DDE2E5",
+            "sidebar": app_theme_config?.color?.secondary || config?.config?.color?.secondary || "#E1D6AE",
+            "secondary": app_theme_config?.color?.secondary || config?.config?.color?.secondary || "#E1D6AE",
+            "background": app_theme_config?.color?.background || config?.config?.color?.background || "#FFFFFF",
+            "typography": "#212429",
+            "headerBorder": "#DDE2E5"
+        }
+    }
+
+    let newAppConfig = {...config, "config": newAppThemeConfig };
+
+    const root = document.querySelector(':root');
+    const setCssVariables = vars => Object.entries(vars).forEach(v => root.style.setProperty(v[0], v[1]));
+    const crudCssVariables = {
+        "--primary-color": tinycolor
+                    .mix(
+                        tinycolor(
+                        newAppConfig?.config?.color?.primary
+                        ).toHexString(),
+                        "#FFFFFF",
+                        9
+                    )
+                    .toHexString() || "#DDE2E5",
+        "--primary-medium-color": tinycolor
+                .mix(
+                tinycolor(newAppConfig?.config?.color?.primary).toHexString(),
+                "#FFFFFF",
+                50
+                )
+                .toHexString(),
+        "--primary-light-color": tinycolor
+                .mix(
+                tinycolor(newAppConfig?.config?.color?.primary).toHexString(),
+                "#FFFFFF",
+                90
+                )
+                .toHexString(),
+        "--secondary-color": tinycolor(newAppConfig?.config?.color?.secondary).toHexString() || "#E1D6AE",
+        "--accent-color": tinycolor(newAppConfig?.config?.color?.accent).toHexString() || "#DDE2E5",
+        "--background-color": tinycolor(newAppConfig?.config?.color?.background).toHexString() || "#FFFFFF",
+        "--typography-color": tinycolor(newAppConfig?.config?.color?.typography).toHexString() || "#212429",
+        "--top-navbar-color": tinycolor(newAppConfig?.config?.color?.header).isLight() ? tinycolor(
+            newAppConfig?.config?.color?.typography
+                ).toHexString() || "#212429"
+            : "#FFFFFF",
+        "--top-navbar-background-color": tinycolor(newAppConfig?.config?.color?.header).toHexString() || "#FFFFFF",
+        "--top-navbar-border-color": tinycolor(newAppConfig?.config?.color?.headerBorder).toHexString() || "#DDE2E5",
+        "--side-navbar-color": tinycolor(newAppConfig?.config?.color?.sidebar).isLight() ? tinycolor(newAppConfig?.config?.color?.typography).toHexString() || "#212429" : "#FFFFFF",
+        "--side-navbar-background-color": tinycolor(newAppConfig?.config?.color?.sidebar).toHexString() || "#E1D6AE",
+        "--side-navbar-hover-background-color": tinycolor(newAppConfig?.config?.color?.sidebar).isLight()
+            ? tinycolor
+                .mix(
+                    tinycolor(
+                        newAppConfig?.config?.color?.sidebar
+                    ).toHexString(),
+                    "#000000",
+                    6
+                )
+                .toHexString() || "#E1D6AE"
+            : tinycolor
+                .mix(
+                    tinycolor(
+                        newAppConfig?.config?.color?.sidebar
+                    ).toHexString(),
+                    "#FFFFFF",
+                    6
+                )
+                .toHexString() || "#FFFFFF",
+    };
+    setCssVariables(crudCssVariables);
+
+    let searchable = table_metadata?.columns
+        ?.filter((eachColumn) => eachColumn?.searchable && !(eachColumn?.type === "date") && !(eachColumn?.type === "datetime") && !(eachColumn?.type === "string" && eachColumn?.choices?.length))
+        .map((eachColumn) => eachColumn?.display_name);
+    let formattedColumns = table_metadata?.columns?.map((eachColumn) => {
+        return {
+            sTitle: eachColumn?.display_name || eachColumn?.name?.split('_').join(' '),
+            data: eachColumn?.name,
+            orderable: eachColumn?.sortable && !(eachColumn?.type === "date") && !(eachColumn?.type === "datetime") && !(eachColumn?.type === "string" && eachColumn?.choices?.length),
+            render: function ( data, type, row, meta ) {
+                if(data && data.toString().indexOf("<") === -1 && data.toString().replace(/\s/g, "").length > 60){
+                    return `<div class="popper-box">
+                                <div class="popper-label">
+                                    ${data}
+                                </div>
+                                <div class="popper-content">
+                                    <div class="popper-inner-content complete-hidden-scroll-style">
+                                        ${data}
+                                    </div> 
+                                    <div id="arrow" data-popper-arrow></div>
+                                </div>
+                            </div>`
+                } else {
+                    return `<div class="max-width">${data}</div>`
+                }
+            }
+        };
+    });
+    let columns = table_metadata?.row_selector?.enabled
+        ? [
+            { sTitle: "", data: "", orderable: false },
+            ...formattedColumns,
+            { sTitle: "", data: "", orderable: false },
+        ]
+        : [...formattedColumns, { sTitle: "", data: "", orderable: false }];
+
+    function attachTableDrawEvents(){
+        $(document).find('.table-date-range-picker').each(function( index ) {
+            let colIdx = $(this).attr("data-colIdx");
+            let options = table_metadata?.columns[colIdx - 1]?.config || {};
+            let defaultValue = $(this).find(".date-range-label").text();
+            let start = defaultValue === 'Select' ? moment().subtract(29, 'days') : $(this).data('daterangepicker')?.startDate;
+            let end = defaultValue === 'Select' ? moment() : $(this).data('daterangepicker')?.endDate;
+
+            let cb = (start, end) => {
+                let data = {"start": start.format("YYYY-MM-DD"), "end": end.format("YYYY-MM-DD")}
+                if(options?.singleDatePicker){
+                    $(this).find(".date-range-label").html(start.format('DD MMM YY'));
+                } else {
+                    $(this).find(".date-range-label").html(start.format('DD MMM YY') + ' - ' + end.format('DD MMM YY'));
+                }
+                $(this).find(".date-range-label").removeClass("date-range-placeholder");
+                zelthyTable.columns.adjust();
+                zelthyTable.columns(colIdx).search(JSON.stringify(data)).draw()
+            }
+
+            $(this).daterangepicker({
+                alwaysShowCalendars: true,
+                startDate: start,
+                endDate: end,
+                showDropdowns: true,
+                locale: { format: 'DD MMM YY', cancelLabel: 'Clear' },
+                applyButtonClasses: "date-picker-apply-button",
+                ...options,
+            });
+
+            $(this).on('apply.daterangepicker', function(ev, picker) {
+                $(document).find(`.popper-label-${colIdx}`).html(`<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <path d="M9.2545 7.97654C9.2545 7.77676 9.34794 7.48628 9.46539 7.32618L12.9732 2.54006C13.0893 2.37995 13.0333 2.25102 12.8437 2.25102H3.95702C3.76882 2.25102 3.71009 2.37853 3.82754 2.54006L7.33535 7.32618C7.45147 7.48487 7.54624 7.77533 7.54624 7.97654V13.4953C7.54624 13.6951 7.68638 13.7986 7.8639 13.7235L8.93702 13.2672C9.11321 13.1936 9.25469 12.9739 9.25469 12.7699L9.2545 7.97654ZM10.6213 12.7699C10.6213 13.5676 10.1381 14.32 9.44537 14.6147L8.37092 15.0709C7.29381 15.5271 6.17928 14.7209 6.17928 13.4953V8.11107L2.74904 3.42978C1.93619 2.32036 2.62624 0.800049 3.95699 0.800049H12.8437C14.1824 0.800049 14.8591 2.32743 14.0516 3.42978L10.6214 8.11107L10.6213 12.7699Z" fill="${crudCssVariables["--primary-color"]}"/>
+                </svg>`);
+            
+                cb(picker.startDate, picker.endDate);
+            });
+
+            $(this).on('cancel.daterangepicker', function(ev, picker) {
+                $(document).find(`.popper-label-${colIdx}`).html(`<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <path d="M9.2545 7.97654C9.2545 7.77676 9.34794 7.48628 9.46539 7.32618L12.9732 2.54006C13.0893 2.37995 13.0333 2.25102 12.8437 2.25102H3.95702C3.76882 2.25102 3.71009 2.37853 3.82754 2.54006L7.33535 7.32618C7.45147 7.48487 7.54624 7.77533 7.54624 7.97654V13.4953C7.54624 13.6951 7.68638 13.7986 7.8639 13.7235L8.93702 13.2672C9.11321 13.1936 9.25469 12.9739 9.25469 12.7699L9.2545 7.97654ZM10.6213 12.7699C10.6213 13.5676 10.1381 14.32 9.44537 14.6147L8.37092 15.0709C7.29381 15.5271 6.17928 14.7209 6.17928 13.4953V8.11107L2.74904 3.42978C1.93619 2.32036 2.62624 0.800049 3.95699 0.800049H12.8437C14.1824 0.800049 14.8591 2.32743 14.0516 3.42978L10.6214 8.11107L10.6213 12.7699Z" fill="#6C747D"/>
+                </svg>`);
+                let data = {"start": "", "end": ""}
+                $(this).find(".date-range-label").html('Select');
+                $(this).find(".date-range-label").addClass("date-range-placeholder");
+                zelthyTable.columns.adjust();
+                zelthyTable.columns(colIdx).search(JSON.stringify(data)).draw()
+            });
+
+            // cb(start, end);
+        });
+
+        $(document).find(".table_select_all_row").removeClass("all_row_selected");
+
+        // view detail and row action buttons handling
+        $(document).find("td.table-extra-cell.each-cell").each(function(){
+            let rowData = $(this).data("row-data");
+            // view detail button if row actions are not available
+            $(this).html(`<div class="each-row-action-box">
+                
+                            <button type="button" class="each-detail-view-button"  data-pk="${rowData.pk}">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="12" viewBox="0 0 18 12" fill="none">
+                                    <path d="M8.99989 9.60004C7.97658 9.60004 6.99508 9.22053 6.27158 8.54553C5.54812 7.87053 5.14136 6.95476 5.14136 5.99997C5.14136 5.04519 5.54812 4.12945 6.27158 3.45441C6.99504 2.77941 7.97656 2.3999 8.99989 2.3999C10.0232 2.3999 11.0047 2.77941 11.7282 3.45441C12.4517 4.12941 12.8584 5.04519 12.8584 5.99997C12.8584 6.95476 12.4517 7.87049 11.7282 8.54553C11.0047 9.22053 10.0232 9.60004 8.99989 9.60004ZM8.99989 3.59999C7.95971 3.59999 7.02161 4.185 6.62368 5.08124C6.22497 5.97826 6.44522 7.01105 7.18074 7.69727C7.91626 8.38352 9.02317 8.58902 9.98458 8.21701C10.9452 7.84576 11.5722 6.9705 11.5722 5.99997C11.5722 5.36322 11.3013 4.75271 10.819 4.30272C10.3366 3.85272 9.68232 3.59995 8.99985 3.59995L8.99989 3.59999Z" fill="currentColor"/>
+                                    <path d="M9 12C4.20908 12 0.273413 6.56405 0.106109 6.33C-0.0353696 6.12975 -0.0353696 5.87026 0.106109 5.67C0.27331 5.43599 4.20908 0 9 0C13.7909 0 17.7266 5.43595 17.8939 5.67C18.0354 5.87026 18.0354 6.12975 17.8939 6.33C17.7267 6.56402 13.7909 12 9 12ZM1.68095 5.69345C1.53172 5.87212 1.53173 6.12778 1.68096 6.30644C2.83132 7.68363 5.78975 10.8 9 10.8C12.2103 10.8 15.1687 7.6837 16.319 6.30645C16.4683 6.12779 16.4683 5.87212 16.319 5.69346C15.1687 4.31627 12.2103 1.19991 9 1.19991C5.78974 1.19991 2.83127 4.3162 1.68095 5.69345Z" fill="currentColor"/>
+                                </svg>
+                                View details
+                            </button>
+                    </div>
+                `)
+
+            // view detail and row actions buttons
+            if(rowData?.row_actions?.length){
+                $(this).html(`<div class="each-row-action-box">
+                    <div class="each-row-action-dropdown-box flex gap-2">
+                            <button type="button" class="each-detail-view-button"  data-pk="${rowData.pk}">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="12" viewBox="0 0 18 12" fill="none">
+                                <path d="M8.99989 9.60004C7.97658 9.60004 6.99508 9.22053 6.27158 8.54553C5.54812 7.87053 5.14136 6.95476 5.14136 5.99997C5.14136 5.04519 5.54812 4.12945 6.27158 3.45441C6.99504 2.77941 7.97656 2.3999 8.99989 2.3999C10.0232 2.3999 11.0047 2.77941 11.7282 3.45441C12.4517 4.12941 12.8584 5.04519 12.8584 5.99997C12.8584 6.95476 12.4517 7.87049 11.7282 8.54553C11.0047 9.22053 10.0232 9.60004 8.99989 9.60004ZM8.99989 3.59999C7.95971 3.59999 7.02161 4.185 6.62368 5.08124C6.22497 5.97826 6.44522 7.01105 7.18074 7.69727C7.91626 8.38352 9.02317 8.58902 9.98458 8.21701C10.9452 7.84576 11.5722 6.9705 11.5722 5.99997C11.5722 5.36322 11.3013 4.75271 10.819 4.30272C10.3366 3.85272 9.68232 3.59995 8.99985 3.59995L8.99989 3.59999Z" fill="currentColor"/>
+                                <path d="M9 12C4.20908 12 0.273413 6.56405 0.106109 6.33C-0.0353696 6.12975 -0.0353696 5.87026 0.106109 5.67C0.27331 5.43599 4.20908 0 9 0C13.7909 0 17.7266 5.43595 17.8939 5.67C18.0354 5.87026 18.0354 6.12975 17.8939 6.33C17.7267 6.56402 13.7909 12 9 12ZM1.68095 5.69345C1.53172 5.87212 1.53173 6.12778 1.68096 6.30644C2.83132 7.68363 5.78975 10.8 9 10.8C12.2103 10.8 15.1687 7.6837 16.319 6.30645C16.4683 6.12779 16.4683 5.87212 16.319 5.69346C15.1687 4.31627 12.2103 1.19991 9 1.19991C5.78974 1.19991 2.83127 4.3162 1.68095 5.69345Z" fill="currentColor"/>
+                            </svg>
+                                View details
+                            </button>
+                        <button type="button" class="each-row-action-button">
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <g id="Frame 122">
+                                    <circle id="Ellipse 8" cx="10" cy="16" r="2" transform="rotate(-90 10 16)" fill="currentColor"/>
+                                    <circle id="Ellipse 9" cx="10" cy="10" r="2" transform="rotate(-90 10 10)" fill="currentColor"/>
+                                    <circle id="Ellipse 10" cx="10" cy="4" r="2" transform="rotate(-90 10 4)" fill="currentColor"/>
+                                </g>
+                            </svg>
+                        </button>
+                        ${rowData?.row_actions?.length && `<ul class="each-row-action-dropdown">    
+                        ${rowData?.row_actions
+                                ?.map((eachAction) => {
+                                    return `<li class="each-row-action-dropdown-list">
+                                        <button type="button" class="each-row-action-dropdown-option" data-key="${eachAction?.key}" data-type="${eachAction?.type}" data-option-data='${JSON.stringify(eachAction)}'>
+                                            ${eachAction?.name
+                                                    ? `<span class="label">${eachAction?.name}</span>`
+                                                    : ""
+                                                }
+                                            ${eachAction?.description
+                                                    ? `<span class="description">${eachAction?.description}</span>`
+                                                    : ""
+                                                }
+                                            
+                                        </button>    
+                                    </li>`;
+                                })
+                                .join("")}
+                        </ul>`}
+                    </div>
+                </div>`)
+            }
+        });
+
+        // Current URL
+        const currentUrl = window.location.href;
+
+        // Create a URLSearchParams object from the current URL
+        const urlSearchParams = new URLSearchParams(window.location.search);
+
+
+        // fetch detailview data
+        async function fetchAndSetDetailView (pk) {
+            
+
+            // Add or update a query parameter
+            urlSearchParams.set('pk', pk);
+
+            // Create a new URL with the updated query parameters
+            const updatedUrl = `${currentUrl.split('?')[0]}?${urlSearchParams.toString()}`;
+
+            // Update the URL without reloading the page
+            window.history.pushState({ path: updatedUrl }, '', updatedUrl);
+
+            try { // update detail view url, type, payload here
+                const response = await fetch(
+                    `./detail-view/?pk=${pk}`, 
+                    {
+                        method: "POST",
+                        headers: {
+                            'X-CSRFToken': "{{csrf_token|safe}}"
+                        },
+                    }
+                );
+                const result = await response.json();
+                if (result.success) {
+                    return result.response;
+                } else {    
+                    if (result.response.message){
+                        alert(result.response.message);
+                    } else {
+                        alert("An error occurred.");
+                    };
+                };
+            } catch (error) {
+                return true; // update with actual error
+                console.error("Error:", error);
+            };
+                
+        };
+
+        // detail view handling
+
+        // Get the value of a specific query parameter
+        function getQueryParamValue(param) {
+            const urlSearchParams = new URLSearchParams(window.location.search);
+            return urlSearchParams.get(param);
+        }
+
+        // Check if a specific query parameter exists
+        function doesQueryParamExist(param) {
+            const urlSearchParams = new URLSearchParams(window.location.search);
+            return urlSearchParams.has(param);
+        }
+
+        // if detail view is already opend before refreshing reopen detailview
+        if(doesQueryParamExist("pk")) { 
+
+            // Add or update a query parameter
+            urlSearchParams.set('pk', getQueryParamValue("pk"));
+            urlSearchParams.set('view', 'detail');
+            urlSearchParams.set('action', 'render');
+
+            // Create a new URL with the updated query parameters
+            const updatedUrl = `${currentUrl.split('?')[0]}?${urlSearchParams.toString()}`;
+
+            // Update the URL without reloading the page
+            window.history.pushState({ path: updatedUrl }, '', updatedUrl);
+
+        };
+
+        $(document)
+            .find(".each-detail-view-button")
+            .on("click", function (event) {
+
+                // Add or update a query parameter
+                urlSearchParams.set('pk', $(this).attr("data-pk"));
+                urlSearchParams.set('view', 'detail');
+                urlSearchParams.set('action', 'render');
+
+                // Create a new URL with the updated query parameters
+                const updatedUrl = `${currentUrl.split('?')[0]}?${urlSearchParams.toString()}`;
+
+                // Update the URL without reloading the page
+                window.location.href = updatedUrl
+                {% comment %} window.history.pushState({ path: updatedUrl }, '', updatedUrl); {% endcomment %}
+                
+        });
+            
+        $(document).on("mouseup", function (e) {
+            let container = $(".each-row-action-box");
+            if (
+                !container.is(e.target) &&
+                container.has(e.target).length === 0
+            ) {
+                let is_visible = container.find(".each-row-action-dropdown").attr("data_is_visible");
+                if (is_visible !== 'true') {
+                    container.find(".each-row-action-dropdown").attr("data-is-visible", false).hide();
+                }
+            }
+        });
+
+        // row action dropdown
+        $(document)
+            .find(".each-row-action-dropdown-box")
+            .each(function (index) {
+                let button = $(this).find(".each-row-action-button")[0];
+                let tooltip = $(this).find(".each-row-action-dropdown")[0];
+
+                let popperInstance = Popper.createPopper(button, tooltip, {
+                    strategy: "fixed",
+                    modifiers: [
+                        {
+                            name: "offset",
+                            options: {
+                                offset: [10, 0],
+                            },
+                        },
+                    ],
+                });
+                popperInstance.setOptions({ placement: "bottom-end" });
+                $(document).on("click", function (event) {
+                    if (popperInstance) {
+                        popperInstance?.update();
+                    }
+                });
+
+                let container = $('.dataTables_scrollBody');
+                let elementToCheck = $(this).find(".each-row-action-button");
+                
+                let observer = new IntersectionObserver(entries => {
+                    let is_visible = $(this).find(".each-row-action-dropdown").attr("data-is-visible");
+                    let isIntersecting = entries[0].isIntersecting;
+
+                    if(is_visible && !isIntersecting){
+                        $(this).find(".each-row-action-dropdown").attr("data-is-visible", false).hide();
+                    }
+                });
+
+                observer.observe(elementToCheck[0]);
+            });
+
+        // show hide row action box
+        $(document)
+            .find("tr")
+            .on("mouseenter click", function () {
+                $(".each-row-action-box").each(function (index) {
+                    let is_visible = $(this).find(".each-row-action-dropdown").attr("data-is-visible");
+                    if (is_visible !== "true") {
+                        $(this).hide();
+                    } else {
+                        $(this).show();
+                    }
+                })
+
+                $(this).find(".each-row-action-box").css({ display: "flex" });
+            });
+
+        $(document)
+            .find(".each-row-action-button")
+            .on("click", function (event) {
+                event.preventDefault();
+                $(".each-row-action-dropdown").attr("data-is-visible", false);
+                $(".each-row-action-dropdown").hide();
+                $(".each-row-action-dropdown").parents("tr").css("z-index", "0");
+                $(this)
+                    .parents(".each-row-action-box")
+                    .find(".each-row-action-dropdown")
+                    .attr("data-is-visible", true)
+                    .show();
+                    $(this).parents("tr").css({"z-index": "3", "position": "relative"});
+            });
+
+        $(document)
+            .find(".popper-box")
+            .each(function (index) {
+                let button = $(this).find(".popper-label")[0];
+                let tooltip = $(this).find(".popper-content")[0];
+
+                let popperInstance = Popper.createPopper(button, tooltip, {
+                    strategy: "fixed",
+                    modifiers: [
+                        {
+                            name: "offset",
+                            options: {
+                                offset: [0, 10],
+                            },
+                        }
+                    ],
+                });
+                popperInstance.setOptions({ placement: "bottom-start" });
+                $(document).on("mousemove", function (event) {
+                    if (popperInstance) {
+                        popperInstance?.update();
+                    }
+                });
+            });
+
+        $(document)
+            .find(".popper-label")
+            .on("mouseenter focus", function (event) {
+                event.preventDefault();
+                $(".popper-content").hide();
+                $(this)
+                    .parents(".popper-box")
+                    .find(".popper-content")
+                    .show();
+                $(document).find(".popper-box").parents("tr").css({"z-index": "0", "position": "relative"});
+                $(this).parents("tr").css({"z-index": "3", "position": "relative"});
+            });
+
+        $(document)
+            .find(".popper-content")
+            .on("click", function (event) {
+                event.preventDefault();
+                event.stopImmediatePropagation();
+            });
+
+        $(document)
+            .on("click", function (event) {
+                $(".popper-content").hide();
+            });
+        
+        $(document)
+            .find(".column-filter-box").on("click", function(event){
+                event.stopImmediatePropagation();
+            });
+
+        $(document)
+            .find(".column-filter-box")
+            .each(function (index) {
+                let button = $(this).find(".column-filter-label")[0];
+                let tooltip = $(this).find(".column-filter-content")[0];
+
+                let popperInstance = Popper.createPopper(button, tooltip, {
+                    placement: 'bottom-end',
+                    strategy: "fixed",
+                    modifiers: [
+                        {
+                            name: "offset",
+                            options: {
+                                offset: [0, 10],
+                            },
+                        }
+                    ],
+                });
+                $(document).on("mousemove", function (event) {
+                    if (popperInstance) {
+                        popperInstance?.update();
+                    }
+                });
+            });
+
+        $(document)
+            .find(".column-filter-label")
+            .on("mouseenter focus", function (event) {
+                event.preventDefault();
+                $(".column-filter-content").hide();
+                $(".column-filter-select").select2("close");
+
+                $(this)
+                    .parents(".column-filter-box")
+                    .find(".column-filter-content")
+                    .show();
+                $(".each-row-action-dropdown").parents("tr").css("z-index", "0");
+                $(this).parents("tr").css({"z-index": "3", "position": "relative"});
+            });
+
+        $(document)
+            .find(".column-filter-content")
+            .on("click", function (event) {
+                event.preventDefault();
+                event.stopImmediatePropagation();
+            });
+
+            // daterangepicker
+        $(document)
+            .on("click", function (event) {
+                $(".column-filter-content").hide(); 
+            });
+        
+        $(document).find(".daterangepicker").on("click", function(event){
+            event.stopImmediatePropagation();
+        });
+
+        $(document).find(".select2-container").on("click",function(event){
+            let select2 = $(event.target).closest('.column-filter-select');
+            select2.select2("open");
+        })
+
+        let editConfig = {
+            "form-type": "edit-patient",
+            "get-url":  `./?action=initialize_form`,
+            "post-url": `./?form_type=create_form`,
+        }
+        
+        
+        $(document)
+            .find(".each-row-action-dropdown-option")
+            .on("click", function (event) {
+                let optionKey = $(this).attr("data-key");
+                let optiontype = $(this).attr("data-type");
+                let optionData = JSON.parse($(this).attr("data-option-data"));
+                // let rowData = $(this).parents(".each-cell").data("row-data");
+                let rowData = JSON.parse($(this).parents(".each-cell").attr("data-frow-data"));
+                
+                if(optiontype === 'simple'){
+                    $(document).find(".row-action-simple-dialog-overlay").css({"display":"flex"});
+                    $(document).find(".row-action-simple-dialog-title").html(optionData?.name);
+                    $(document).find(".row-action-simple-dialog-description").html(optionData?.confirmation_message);
+                    $(document).find(".row-action-simple-dialog-form").data({"rowData":rowData, "optionKey": optionKey, "optiontype": optiontype });
+                }else{
+                    $(document).find("#row_actions_form_modal").css({"display":"flex"});
+                    
+                    $("#row_actions_form_modal #zelthy-dynamic-form").attr("data-config", JSON.stringify({
+                        "get_data":{
+                            "is_api_based":true,
+                            "url":`./?action_type=row&action_key=${optionKey}&pk=${rowData?.pk}&action=initialize_form`,
+                            "static_config":{},
+                        },
+                        "post_data":{
+                            "http_method":"POST",
+                            "url":`./?action_type=row&action_key=${optionKey}&pk=${rowData?.pk}&form_type=row_action_form`,
+                            "payload_type":"FORMDATA"
+                        }
+                    }));
+
+                }
+            });
+        
+        $(document)
+            .find(".download-button")
+            .on("click", function (event) {
+                event.preventDefault();
+                $(".download-confirm-dialog").attr("data-is-visible", false);
+                $(".download-confirm-dialog").hide();
+                $(this)
+                    .parents(".table-static-action")
+                    .find(".download-confirm-dialog")
+                    .attr("data-is-visible", true)
+                    .show();
+            });
+
+        $(document).on("mouseup", function (e) {
+            let container = $(".table-static-action");
+            if (
+                !container.is(e.target) &&
+                container.has(e.target).length === 0
+            ) {
+                let is_visible = container.find(".download-confirm-dialog").attr("data_is_visible");
+                if (is_visible !== 'true') {
+                    container.find(".download-confirm-dialog").hide();
+                }
+            }
+        });
+
+        $(document)
+            .find(".table-static-action")
+            .each(function (index) {
+                let button = $(this).find(".download-button")[0];
+                let tooltip = $(this).find(".download-confirm-dialog")[0];
+
+                let popperInstance = Popper.createPopper(button, tooltip, {
+                    strategy: "fixed",
+                    modifiers: [
+                        {
+                            name: "offset",
+                            options: {
+                                offset: [10, 10],
+                            },
+                        },
+                    ],
+                });
+                popperInstance.setOptions({ placement: "bottom-end" });
+                $(document).on("click", function (event) {
+                    if (popperInstance) {
+                        popperInstance?.update();
+                    }
+                });
+            });
+    }
+
+    let dataTableApiQueries = null;
+
+    function debounce(func, timeout = 1000){
+        let timer;
+        return (...args) => {
+            clearTimeout(timer);
+            timer = setTimeout(() => { func.apply(this, args); }, timeout);
+        };
+    }
+    
+    function showTableLoader(processing){
+        if(processing){
+            $(document).find(".overlay-spinner").show();
+        } else {
+            $(document).find(".overlay-spinner").hide();
+        }
+    }
+    const onTableProcessing = debounce((processing) => showTableLoader(processing));
+
+    let zelthyTable = $("#zelthytable").on( 'processing.dt', function ( e, settings, processing ) {
+            $(document).find(".overlay-spinner").hide()
+            onTableProcessing(processing);
+        } ).DataTable({
+        pagingType: "input",
+        fixedColumns: {
+            left: 0,
+            right: 1,
+        },
+        // <img class="custom-empty-table-image" src="{% zstatic 'packages/crud/images/svg/empty-table.svg' %}">
+        language: {
+            emptyTable: `<div class="custom-empty-table">
+                <svg class="custom-empty-table-image" width="652" height="434" viewBox="0 0 652 434" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M191.151 106.123L93.6113 171.271L189.688 314.676L287.228 249.528L191.151 106.123Z" fill="#F5F5F5"/>
+                    <path d="M236.823 242.745L235.719 249.585L187.228 242.606L188.332 235.766L236.823 242.745Z" fill="#E0E0E0"/>
+                    <path d="M212.403 218.345L219.358 219.344L211.647 267.014L204.684 266.007L212.403 218.345Z" fill="#E0E0E0"/>
+                    <path d="M167.781 157.759C167.85 157.855 158.079 164.512 145.952 172.602C133.824 180.692 123.94 187.184 123.87 187.08C123.801 186.976 133.572 180.327 145.699 172.229C157.827 164.13 167.667 157.655 167.781 157.759Z" fill="#E0E0E0"/>
+                    <path d="M203.615 148.767C203.684 148.871 187.428 159.842 167.311 173.279C147.195 186.716 130.799 197.522 130.747 197.427C130.695 197.331 146.917 186.342 167.059 172.906C187.202 159.469 203.545 148.662 203.615 148.767Z" fill="#E0E0E0"/>
+                    <path d="M210.804 159.495C210.874 159.599 194.617 170.579 174.501 184.016C154.384 197.453 137.989 208.259 137.937 208.155C137.884 208.051 154.124 197.079 174.249 183.634C194.374 170.189 210.735 159.391 210.804 159.495Z" fill="#E0E0E0"/>
+                    <path d="M217.993 170.232C218.063 170.336 201.806 181.317 181.69 194.745C161.573 208.172 145.178 218.996 145.178 218.892C145.178 218.788 161.356 207.808 181.481 194.371C201.606 180.935 217.924 170.128 217.993 170.232Z" fill="#E0E0E0"/>
+                    <path d="M225.157 180.969C225.226 181.073 208.97 192.045 188.853 205.482C168.737 218.918 152.341 229.725 152.298 229.621C152.254 229.516 168.502 218.545 188.645 205.108C208.787 191.672 225.157 180.865 225.157 180.969Z" fill="#E0E0E0"/>
+                    <path d="M517.313 202.213L435.396 256.927L516.082 377.361L598 322.647L517.313 202.213Z" fill="#F5F5F5"/>
+                    <path d="M555.677 316.976L554.747 322.722L514.019 316.863L514.957 311.117L555.677 316.976Z" fill="#E0E0E0"/>
+                    <path d="M535.17 296.483L541.012 297.325L534.535 337.357L528.685 336.515L535.17 296.483Z" fill="#E0E0E0"/>
+                    <path d="M497.658 245.644C497.727 245.748 489.529 251.347 479.341 258.143C469.152 264.94 460.841 270.373 460.772 270.295C460.702 270.217 468.909 264.601 479.089 257.796C489.269 250.991 497.588 245.496 497.658 245.644Z" fill="#E0E0E0"/>
+                    <path d="M527.78 238.049C527.85 238.153 514.21 247.389 497.353 258.664C480.497 269.939 466.701 279.019 466.631 278.914C466.562 278.81 480.201 269.575 497.058 258.291C513.914 247.007 527.684 237.945 527.78 238.049Z" fill="#E0E0E0"/>
+                    <path d="M533.822 247.059C533.892 247.163 520.252 256.399 503.395 267.683C486.539 278.967 472.743 288.028 472.673 287.924C472.604 287.82 486.2 278.628 503.1 267.344C520 256.06 533.77 246.963 533.822 247.059Z" fill="#E0E0E0"/>
+                    <path d="M539.855 256.06C539.925 256.164 526.276 265.4 509.429 276.684C492.581 287.968 478.776 297.03 478.706 296.925C478.637 296.821 492.277 287.594 509.133 276.302C525.989 265.009 539.794 255.973 539.855 256.06Z" fill="#E0E0E0"/>
+                    <path d="M545.941 265.096C546.011 265.2 532.371 274.427 515.515 285.711C498.658 296.995 484.862 306.057 484.792 305.961C484.723 305.866 498.363 296.622 515.219 285.338C532.075 274.054 545.828 264.992 545.941 265.096Z" fill="#E0E0E0"/>
+                    <path d="M387.715 111.399L298.332 63.6658L227.939 195.077L317.322 242.81L387.715 111.399Z" fill="#F5F5F5"/>
+                    <path d="M302.023 201.697L296.355 203.633L281.959 163.905L287.636 161.96L302.023 201.697Z" fill="#E0E0E0"/>
+                    <path d="M310.716 173.192L312.785 178.895L273.265 192.409L271.196 186.707L310.716 173.192Z" fill="#E0E0E0"/>
+                    <path d="M338.797 114.576C338.727 114.706 329.669 110.002 318.55 104.073C307.431 98.1447 298.486 93.2232 298.555 93.093C298.625 92.9628 307.692 97.6673 318.811 103.596C329.929 109.524 338.866 114.437 338.797 114.576Z" fill="#E0E0E0"/>
+                    <path d="M360.251 138.212C360.182 138.342 345.177 130.46 326.739 120.617C308.3 110.774 293.417 102.684 293.487 102.554C293.556 102.424 308.552 110.297 326.991 120.148C345.429 130 360.321 138.081 360.251 138.212Z" fill="#E0E0E0"/>
+                    <path d="M354.983 148.046C354.913 148.176 339.909 140.303 321.47 130.452C303.031 120.6 288.148 112.519 288.218 112.389C288.288 112.258 303.284 120.14 321.722 129.983C340.161 139.826 355.052 147.916 354.983 148.046Z" fill="#E0E0E0"/>
+                    <path d="M349.715 157.881C349.646 158.011 334.641 150.138 316.202 140.295C297.764 130.452 282.881 122.388 282.95 122.232C283.02 122.076 298.016 129.974 316.455 139.817C334.893 149.661 349.785 157.75 349.715 157.881Z" fill="#E0E0E0"/>
+                    <path d="M344.447 167.715C344.377 167.845 329.373 159.972 310.934 150.129C292.495 140.286 277.604 132.196 277.682 132.066C277.76 131.936 292.747 139.809 311.186 149.652C329.625 159.495 344.516 167.585 344.447 167.715Z" fill="#E0E0E0"/>
+                    <path d="M576.951 381.773C576.951 381.894 464.589 381.998 326.009 381.998C187.429 381.998 75.0498 381.92 75.0498 381.773C75.0498 381.625 187.394 381.547 326.009 381.547C464.624 381.547 576.951 381.642 576.951 381.773Z" fill="#263238"/>
+                    <path d="M102.834 327.41C104.304 327.515 105.737 327.916 107.048 328.587C108.36 329.258 109.522 330.186 110.467 331.316C112.344 333.588 113.674 336.261 114.353 339.128C115.822 344.613 114.918 351.097 113.353 356.557C107.407 354.43 103.729 348.094 102.051 344.761C99.4435 339.501 97.8874 328.39 102.808 327.401" fill="currentColor"/>
+                    <path d="M121.916 363.215C121.023 361.832 120.512 360.238 120.436 358.594C120.359 356.951 120.72 355.317 121.481 353.858C122.266 352.412 123.331 351.137 124.615 350.107C125.898 349.078 127.375 348.314 128.957 347.86C130.409 347.408 132.096 347.226 133.356 348.068C133.924 348.497 134.367 349.071 134.637 349.729C134.908 350.387 134.997 351.105 134.895 351.809C134.667 353.219 134.067 354.544 133.156 355.646C130.261 359.56 126.749 362.815 121.855 363.215" fill="currentColor"/>
+                    <path d="M122.576 381.555C122.447 381.187 122.357 380.806 122.306 380.418C122.15 379.602 121.941 378.552 121.689 377.293C120.909 373.847 120.692 370.297 121.046 366.782C121.456 363.249 122.803 359.89 124.949 357.052C125.605 356.203 126.361 355.436 127.201 354.769C127.429 354.588 127.667 354.42 127.914 354.265C127.992 354.2 128.08 354.148 128.174 354.109C127.075 355.047 126.07 356.091 125.175 357.225C123.142 360.066 121.862 363.375 121.454 366.843C120.898 370.888 121.585 374.594 121.985 377.259C122.193 378.587 122.367 379.663 122.463 380.41C122.531 380.788 122.569 381.171 122.576 381.555Z" fill="#263238"/>
+                    <path d="M104.746 335.768C104.845 335.905 104.927 336.054 104.99 336.211C105.146 336.558 105.355 336.992 105.598 337.539C106.128 338.693 106.867 340.369 107.763 342.443C109.554 346.601 111.953 352.382 114.457 358.822C116.96 365.263 119.09 371.139 120.542 375.419C121.29 377.554 121.872 379.29 122.281 380.496C122.463 381.069 122.602 381.529 122.715 381.885C122.777 382.045 122.821 382.211 122.846 382.38C122.757 382.233 122.687 382.075 122.637 381.911C122.507 381.564 122.341 381.113 122.124 380.548L120.29 375.514C118.734 371.27 116.56 365.402 114.065 358.97C111.57 352.538 109.206 346.74 107.484 342.556C106.615 340.499 105.946 338.824 105.45 337.6C105.224 337.044 105.042 336.602 104.903 336.246C104.837 336.091 104.785 335.931 104.746 335.768Z" fill="#263238"/>
+                    <path d="M115.508 369.421C113.72 366.447 111.248 363.941 108.297 362.11C105.346 360.28 102.001 359.176 98.539 358.892C96.8003 358.77 94.6617 359.065 93.8793 360.628C93.0969 362.19 94.1401 364.1 95.3398 365.367C97.8888 368.03 101.17 369.879 104.77 370.682C108.37 371.485 112.128 371.207 115.569 369.881" fill="currentColor"/>
+                    <path d="M101.217 363.597C101.585 363.578 101.955 363.593 102.321 363.64C102.749 363.663 103.176 363.712 103.599 363.787C104.094 363.883 104.677 363.935 105.285 364.109C105.966 364.252 106.636 364.438 107.293 364.664C108.055 364.908 108.801 365.198 109.528 365.532C111.199 366.28 112.78 367.214 114.239 368.318C115.682 369.449 116.989 370.742 118.134 372.172C118.628 372.795 119.084 373.447 119.499 374.125C119.874 374.711 120.216 375.317 120.525 375.939C120.786 376.447 121.018 376.968 121.22 377.502C121.395 377.897 121.543 378.303 121.664 378.717C121.792 379.063 121.888 379.421 121.95 379.785C121.855 379.785 121.438 378.292 120.264 376.07C119.944 375.473 119.593 374.893 119.212 374.334C118.788 373.676 118.33 373.042 117.838 372.433C115.565 369.627 112.665 367.392 109.371 365.905C108.615 365.576 107.893 365.263 107.189 365.037C106.543 364.802 105.884 364.602 105.216 364.438C102.782 363.77 101.208 363.692 101.217 363.597Z" fill="#263238"/>
+                    <path d="M495.833 91.5567C493.277 92.1382 492.034 95.0807 491.79 97.6847C491.547 100.289 491.877 103.049 490.782 105.427C489.547 108.101 486.6 110.08 486.505 113.022C486.444 114.819 487.513 116.494 487.461 118.308C487.374 121.26 484.366 123.516 484.201 126.433C484.088 128.56 485.505 130.591 485.166 132.691C484.905 134.323 483.627 135.608 483.088 137.17C482.019 140.295 484.166 143.723 486.957 145.477C488.52 146.458 490.279 147.087 492.111 147.319C493.943 147.551 495.804 147.381 497.563 146.821C499.323 146.26 500.938 145.323 502.297 144.074C503.656 142.826 504.725 141.296 505.43 139.592C506.978 135.842 506.639 131.615 506.3 127.579C505.256 114.987 504.48 102.378 503.97 89.7512" fill="#263238"/>
+                    <path d="M488.409 135.981C488.935 135.655 489.346 135.172 489.583 134.601C489.834 133.921 489.934 133.196 489.878 132.474C489.783 131.517 489.57 130.575 489.244 129.671C488.828 128.533 488.673 127.317 488.792 126.112C489.009 124.758 489.983 123.647 490.861 122.553C491.334 122.018 491.729 121.419 492.034 120.774C492.341 120.121 492.39 119.378 492.173 118.69C491.721 117.276 490.33 116.234 489.696 114.593C489.397 113.781 489.349 112.899 489.557 112.059C489.754 111.271 490.046 110.511 490.426 109.793C491.16 108.501 491.743 107.13 492.165 105.705C492.773 102.954 492.486 100.323 492.904 98.1621C493.135 96.4311 493.904 94.8161 495.103 93.5444C495.442 93.2018 495.829 92.9095 496.251 92.6764C496.396 92.6007 496.551 92.5452 496.711 92.5115C496.166 92.811 495.666 93.1849 495.225 93.6225C494.114 94.907 493.415 96.4943 493.217 98.1795C493.064 99.3308 492.983 100.49 492.973 101.652C492.971 103.018 492.837 104.381 492.573 105.722C492.158 107.18 491.575 108.584 490.835 109.906C490.183 111.269 489.583 112.866 490.157 114.359C490.73 115.852 492.113 116.885 492.643 118.482C492.882 119.271 492.823 120.12 492.478 120.869C492.139 121.579 491.7 122.237 491.174 122.822C490.304 123.916 489.357 124.957 489.148 126.173C489.026 127.325 489.163 128.49 489.548 129.584C489.859 130.517 490.051 131.485 490.122 132.466C490.165 133.221 490.031 133.976 489.731 134.67C489.544 135.106 489.244 135.483 488.861 135.764C488.725 135.863 488.572 135.937 488.409 135.981Z" fill="#455A64"/>
+                    <path d="M481.611 156.561L473.787 179.129L441.065 180.865L435.605 193.017L469.77 196.489C471.384 197.151 473.116 197.479 474.861 197.453C476.606 197.428 478.327 197.05 479.921 196.342C481.515 195.633 482.949 194.61 484.136 193.333C485.323 192.056 486.238 190.552 486.827 188.911L495.946 163.496L481.611 156.561Z" fill="#B78876"/>
+                    <path d="M549.253 369.508C549.253 369.508 525.277 293.453 524.764 290.988C524.303 288.749 533.458 234.021 534.622 219.812L502.222 221.019V221.34L488.452 222.104L500.779 377.58H515.688L514.21 325.977C523.408 350.62 536.587 375.74 536.587 375.74L549.253 369.508Z" fill="#B78876"/>
+                    <path d="M514.82 344.492C514.82 344.023 514.637 327.201 514.637 327.201C514.455 328.208 508.926 312.601 509.056 311.655C509.126 311.161 514.82 344.492 514.82 344.492Z" fill="#A36957"/>
+                    <path d="M508.43 304.26C508.353 304.569 508.321 304.888 508.334 305.206C508.286 306.073 508.286 306.943 508.334 307.81C508.334 308.357 508.412 308.947 508.482 309.59C508.551 310.232 508.647 310.909 508.795 311.612C509.104 313.147 509.513 314.661 510.02 316.143C511.098 319.294 512.298 322.045 513.141 324.042C513.541 324.91 513.889 325.734 514.184 326.394C514.291 326.701 514.437 326.993 514.619 327.262C514.573 326.962 514.485 326.67 514.358 326.394C514.158 325.821 513.854 324.997 513.489 323.981C512.724 321.95 511.577 319.172 510.507 316.056C510.001 314.596 509.586 313.106 509.264 311.595C509.108 310.9 509.003 310.232 508.908 309.607C508.812 308.982 508.742 308.392 508.699 307.871C508.595 306.795 508.551 305.927 508.525 305.319C508.542 304.963 508.509 304.607 508.43 304.26Z" fill="#A36957"/>
+                    <path d="M500.502 378.37V376.972L515.776 376.304L515.819 382.076L514.881 382.137C510.682 382.38 493.538 383.092 490.739 382.25C487.601 381.312 500.502 378.37 500.502 378.37Z" fill="#455A64"/>
+                    <path d="M516.019 381.729C515.932 381.735 515.845 381.735 515.758 381.729L515.01 381.781L512.246 381.903C509.916 381.998 506.691 382.085 503.135 382.102C499.58 382.12 496.346 382.059 494.007 381.989L491.252 381.877H490.495H490.234C490.321 381.87 490.408 381.87 490.495 381.877H491.252L494.016 381.929C496.346 381.929 499.571 381.998 503.127 381.981C506.682 381.963 509.916 381.903 512.246 381.842L515.01 381.772H516.019V381.729Z" fill="#263238"/>
+                    <path d="M495.52 382.215C495.393 381.761 495.218 381.321 494.998 380.904C494.723 380.52 494.405 380.167 494.051 379.854C494.525 380.023 494.919 380.364 495.155 380.809C495.442 381.218 495.572 381.718 495.52 382.215Z" fill="#263238"/>
+                    <path d="M500.024 379.932C500.024 379.932 499.771 379.698 499.545 379.351C499.319 379.004 499.18 378.7 499.224 378.674C499.267 378.648 499.476 378.899 499.702 379.247C499.928 379.594 500.067 379.906 500.024 379.932Z" fill="#263238"/>
+                    <path d="M501.258 379.316C501.258 379.359 500.98 379.194 500.719 378.96C500.458 378.726 500.267 378.509 500.302 378.474C500.337 378.439 500.58 378.596 500.841 378.83C501.102 379.064 501.293 379.238 501.258 379.316Z" fill="#263238"/>
+                    <path d="M502.031 377.84C501.776 377.934 501.503 377.97 501.232 377.945C500.965 377.98 500.695 377.953 500.44 377.866C500.693 377.773 500.963 377.738 501.232 377.762C501.501 377.726 501.774 377.752 502.031 377.84Z" fill="#263238"/>
+                    <path d="M502.292 376.833C502.033 377.001 501.732 377.092 501.423 377.094C501.128 377.133 500.827 377.091 500.554 376.972C500.841 376.924 501.132 376.901 501.423 376.903C501.71 376.852 502.001 376.828 502.292 376.833Z" fill="#263238"/>
+                    <path d="M499.511 378.604C499.186 378.665 498.853 378.665 498.528 378.604C498.177 378.562 497.831 378.486 497.494 378.378C497.285 378.321 497.084 378.239 496.894 378.135C496.778 378.067 496.692 377.959 496.651 377.832C496.635 377.759 496.64 377.684 496.666 377.614C496.693 377.545 496.738 377.485 496.798 377.441C497.039 377.325 497.303 377.263 497.57 377.261C497.838 377.258 498.102 377.315 498.345 377.427C498.588 377.539 498.803 377.704 498.974 377.909C499.146 378.114 499.27 378.354 499.337 378.613C499.354 378.699 499.354 378.787 499.337 378.873C499.238 378.56 499.085 378.266 498.885 378.005C498.654 377.745 498.351 377.558 498.015 377.467C497.631 377.343 497.213 377.374 496.851 377.554C496.703 377.667 496.764 377.849 496.929 377.953C497.106 378.049 497.293 378.127 497.485 378.188C497.812 378.295 498.146 378.379 498.485 378.439C499.137 378.578 499.511 378.578 499.511 378.604Z" fill="#263238"/>
+                    <path d="M499.258 378.656C499.132 378.455 499.088 378.212 499.137 377.979C499.168 377.724 499.261 377.48 499.406 377.267C499.488 377.122 499.604 377 499.746 376.912C499.887 376.824 500.048 376.773 500.215 376.764C500.313 376.787 500.399 376.846 500.456 376.93C500.512 377.014 500.535 377.116 500.519 377.215C500.497 377.371 500.441 377.519 500.354 377.649C500.222 377.865 500.067 378.065 499.893 378.248C499.742 378.421 499.551 378.555 499.337 378.639C499.337 378.639 499.528 378.465 499.797 378.153C499.954 377.974 500.091 377.779 500.206 377.571C500.336 377.363 500.432 376.99 500.206 376.946C499.98 376.903 499.719 377.172 499.571 377.363C499.433 377.551 499.338 377.767 499.293 377.996C499.258 378.214 499.246 378.436 499.258 378.656Z" fill="#263238"/>
+                    <path d="M515.697 377.58C515.697 377.58 515.263 377.58 514.576 377.623C513.682 377.73 512.835 378.085 512.133 378.649C511.431 379.212 510.901 379.96 510.603 380.809C510.377 381.46 510.36 381.903 510.325 381.894C510.29 381.885 510.325 381.781 510.325 381.59C510.347 381.31 510.4 381.034 510.481 380.766C510.758 379.877 511.29 379.089 512.011 378.5C512.742 377.922 513.629 377.574 514.559 377.502C514.847 377.467 515.139 377.467 515.428 377.502C515.521 377.516 515.611 377.542 515.697 377.58Z" fill="#263238"/>
+                    <path d="M508.387 380.514C507.658 380.683 506.909 380.756 506.161 380.731C505.417 380.768 504.671 380.704 503.944 380.54C503.944 380.488 504.935 380.54 506.161 380.54C507.387 380.54 508.378 380.462 508.387 380.514Z" fill="#263238"/>
+                    <path d="M511.36 380.488C511.36 380.488 511.281 380.696 511.177 380.922C511.073 381.147 511.021 381.356 510.968 381.347C510.916 381.338 510.89 381.113 511.012 380.844C511.134 380.575 511.325 380.444 511.36 380.488Z" fill="#263238"/>
+                    <path d="M512.481 379.09C512.481 379.09 512.42 379.281 512.264 379.438C512.107 379.594 511.951 379.698 511.907 379.663C511.864 379.628 511.968 379.472 512.125 379.307C512.281 379.142 512.438 379.047 512.481 379.09Z" fill="#263238"/>
+                    <path d="M514.081 378.448C514.081 378.5 513.872 378.5 513.646 378.578C513.42 378.656 513.264 378.778 513.22 378.743C513.177 378.708 513.307 378.5 513.585 378.405C513.863 378.309 514.098 378.396 514.081 378.448Z" fill="#263238"/>
+                    <path d="M515.219 378.136C515.219 378.188 515.158 378.266 515.028 378.309C514.897 378.353 514.784 378.361 514.767 378.309C514.749 378.257 514.836 378.179 514.958 378.136C515.08 378.092 515.201 378.092 515.219 378.136Z" fill="#263238"/>
+                    <path d="M536.283 377.024L535.71 375.748L549.367 368.9L551.775 374.108L550.906 374.551C547.176 376.486 531.832 384.142 528.929 384.524C525.721 384.984 536.283 377.024 536.283 377.024Z" fill="#455A64"/>
+                    <path d="M551.826 373.735L551.6 373.874L550.931 374.221L548.462 375.471C546.376 376.504 543.472 377.901 540.229 379.377C536.987 380.852 534.014 382.111 531.858 383.005L529.293 384.038L528.598 384.307C528.518 384.344 528.433 384.37 528.346 384.385L528.58 384.272L529.267 383.968L531.806 382.883C533.953 381.963 536.909 380.679 540.151 379.203C543.394 377.727 546.306 376.356 548.41 375.349L550.896 374.16L551.583 373.839L551.826 373.735Z" fill="#263238"/>
+                    <path d="M533.353 382.562C533.052 382.196 532.711 381.864 532.336 381.573C531.929 381.332 531.494 381.139 531.041 381C531.54 380.993 532.029 381.139 532.443 381.419C532.856 381.698 533.174 382.097 533.353 382.562Z" fill="#263238"/>
+                    <path d="M536.492 378.639C536.492 378.639 536.162 378.535 535.814 378.309C535.466 378.083 535.214 377.866 535.24 377.823C535.266 377.78 535.57 377.927 535.918 378.153C536.266 378.379 536.518 378.596 536.492 378.639Z" fill="#263238"/>
+                    <path d="M537.344 377.58C537.344 377.623 537.049 377.58 536.71 377.476C536.371 377.372 536.118 377.241 536.127 377.189C536.347 377.169 536.568 377.205 536.77 377.293C537.101 377.372 537.362 377.493 537.344 377.58Z" fill="#263238"/>
+                    <path d="M537.466 375.913C537.466 375.965 537.179 376.148 536.779 376.339C536.548 376.477 536.29 376.563 536.022 376.59C536.022 376.538 536.309 376.356 536.701 376.165C536.935 376.027 537.195 375.942 537.466 375.913Z" fill="#263238"/>
+                    <path d="M537.291 374.889C537.291 374.889 537.039 375.236 536.587 375.488C536.331 375.662 536.027 375.753 535.718 375.748C535.967 375.581 536.232 375.439 536.509 375.323C536.935 375.089 537.248 374.846 537.291 374.889Z" fill="#263238"/>
+                    <path d="M535.509 377.649C535.245 377.831 534.951 377.966 534.64 378.049C534.299 378.148 533.95 378.22 533.597 378.266C533.383 378.292 533.167 378.292 532.954 378.266C532.819 378.255 532.694 378.193 532.606 378.092C532.565 378.03 532.544 377.958 532.544 377.884C532.544 377.81 532.565 377.737 532.606 377.675C532.87 377.356 533.237 377.137 533.645 377.058C534.053 376.979 534.475 377.044 534.84 377.241C535.056 377.354 535.245 377.511 535.396 377.701C535.501 377.84 535.544 377.927 535.536 377.936C535.321 377.697 535.065 377.5 534.779 377.354C534.473 377.211 534.132 377.159 533.797 377.207C533.598 377.227 533.405 377.287 533.228 377.382C533.052 377.478 532.897 377.607 532.771 377.762C532.675 377.927 532.771 378.066 533.006 378.092C533.205 378.109 533.406 378.109 533.606 378.092C533.952 378.057 534.295 377.996 534.631 377.91C535.127 377.771 535.509 377.623 535.509 377.649Z" fill="#263238"/>
+                    <path d="M535.266 377.797C535.073 377.659 534.937 377.455 534.884 377.224C534.808 376.98 534.79 376.721 534.832 376.469C534.847 376.302 534.904 376.142 534.998 376.004C535.093 375.866 535.221 375.754 535.371 375.679C535.588 375.61 536.092 376.052 536.127 376.217C536.162 376.382 535.875 376.295 535.858 376.434C535.83 376.68 535.771 376.922 535.684 377.155C535.62 377.378 535.501 377.581 535.336 377.745C535.336 377.745 535.44 377.51 535.562 377.12C535.624 376.889 535.668 376.654 535.692 376.417C535.692 376.174 535.692 375.8 535.414 375.861C535.136 375.922 535.058 376.261 534.997 376.504C534.944 376.729 534.944 376.964 534.997 377.189C535.069 377.399 535.159 377.603 535.266 377.797Z" fill="#263238"/>
+                    <path d="M549.827 370.08C549.827 370.08 549.41 370.228 548.819 370.584C548.046 371.045 547.417 371.712 547.002 372.511C546.6 373.317 546.428 374.218 546.506 375.115C546.559 375.809 546.724 376.208 546.689 376.226C546.633 376.14 546.589 376.046 546.559 375.948C546.472 375.682 546.411 375.409 546.376 375.132C546.251 374.208 546.412 373.267 546.836 372.436C547.26 371.605 547.927 370.923 548.749 370.48C548.995 370.344 549.254 370.233 549.523 370.15C549.62 370.112 549.723 370.088 549.827 370.08Z" fill="#263238"/>
+                    <path d="M544.36 375.757C543.134 376.608 541.765 377.232 540.317 377.597C540.317 377.545 541.23 377.198 542.343 376.729C543.456 376.261 544.334 375.714 544.36 375.757Z" fill="#263238"/>
+                    <path d="M547.062 374.516C547.105 374.516 547.062 374.733 547.062 374.985C547.062 375.236 547.062 375.445 547.062 375.462C547.062 375.479 546.889 375.271 546.889 374.985C546.889 374.698 547.019 374.49 547.062 374.516Z" fill="#263238"/>
+                    <path d="M547.505 372.78C547.548 372.78 547.505 372.98 547.453 373.188C547.401 373.396 547.271 373.552 547.228 373.535C547.184 373.518 547.228 373.335 547.28 373.127C547.332 372.919 547.453 372.763 547.505 372.78Z" fill="#263238"/>
+                    <path d="M548.706 371.504C548.706 371.556 548.533 371.634 548.359 371.799C548.185 371.964 548.089 372.138 548.046 372.12C548.002 372.103 548.046 371.86 548.237 371.66C548.428 371.461 548.698 371.504 548.706 371.504Z" fill="#263238"/>
+                    <path d="M549.619 370.792C549.619 370.792 549.619 370.931 549.514 371.026C549.41 371.122 549.314 371.174 549.28 371.139C549.245 371.105 549.28 371 549.384 370.905C549.488 370.809 549.584 370.757 549.619 370.792Z" fill="#263238"/>
+                    <path d="M532.519 194.12L529.98 163.132L543.02 163.366C543.02 163.366 543.62 158.792 541.699 148.775C540.516 142.63 536.422 138.863 531.823 136.623V136.536L531.423 136.432C527.638 134.735 523.595 133.682 519.461 133.316L503.422 133.498C503.422 133.498 491.173 131.936 484.418 140.694C481.81 144.053 473.717 167.047 473.717 167.047L492.973 176.3L491.173 163.549C491.173 163.549 491.538 172.793 492.72 175.701C493.372 177.332 495.328 182.402 495.328 182.402L495.076 197.696L532.519 194.12Z" fill="currentColor"/>
+                    <path d="M523.678 158.636L521.296 168.756H543.751L542.273 151.778L523.678 158.636Z" fill="currentColor"/>
+                    <path d="M543.751 168.757C542.769 168.576 541.775 168.477 540.777 168.461C538.934 168.357 536.431 168.262 533.579 168.279C530.728 168.297 528.216 168.418 526.373 168.557C525.376 168.592 524.384 168.714 523.408 168.921C524.403 169.001 525.403 169.001 526.399 168.921C528.233 168.861 530.745 168.791 533.579 168.783C536.413 168.774 538.926 168.783 540.769 168.826C541.763 168.882 542.76 168.858 543.751 168.757Z" fill="#263238"/>
+                    <path d="M522.704 151.7C522.597 152.564 522.574 153.436 522.635 154.304C522.635 155.893 522.704 158.08 522.8 160.502C522.895 162.923 523.008 165.119 523.113 166.699C523.117 167.574 523.21 168.447 523.391 169.303C523.498 168.439 523.521 167.567 523.46 166.699C523.46 165.111 523.391 162.915 523.295 160.493C523.2 158.071 523.087 155.884 522.982 154.296C522.979 153.423 522.885 152.554 522.704 151.7Z" fill="#263238"/>
+                    <g opacity="0.3">
+                    <path d="M502.274 160.467C502.274 160.467 507.264 197.418 521.295 196.437C521.295 196.437 527.615 196.368 529.641 192.175V190.526L502.274 160.467Z" fill="black"/>
+                    </g>
+                    <g opacity="0.3">
+                    <path d="M522.704 153.879L520.018 171.994L521.756 175.171L524.625 168.956L523.408 168.921L522.704 153.879Z" fill="black"/>
+                    </g>
+                    <path d="M495.251 182.419C495.084 182.148 494.956 181.856 494.869 181.551C494.651 180.987 494.364 180.162 493.999 179.129C493.129 176.438 492.412 173.699 491.852 170.926C491.294 168.152 490.94 165.341 490.791 162.516C490.739 161.431 490.722 160.554 490.739 159.912C490.717 159.598 490.737 159.282 490.8 158.974C490.87 158.974 490.922 160.311 491.104 162.446C491.349 165.246 491.747 168.031 492.295 170.788C492.939 174.017 493.712 176.907 494.303 178.982C494.582 179.945 494.816 180.77 495.008 181.447C495.127 181.76 495.209 182.086 495.251 182.419Z" fill="#263238"/>
+                    <path d="M500.919 193.035C500.797 193.035 500.45 192.279 500.145 191.299C499.883 190.697 499.767 190.043 499.806 189.389C500.19 189.919 500.454 190.526 500.58 191.168C500.829 191.758 500.945 192.395 500.919 193.035Z" fill="#263238"/>
+                    <path d="M502.858 192.896C502.2 191.154 502.173 189.239 502.779 187.479C502.847 188.381 502.847 189.286 502.779 190.187C502.874 191.087 502.9 191.992 502.858 192.896Z" fill="#263238"/>
+                    <path d="M493.364 176.725C493.304 176.829 488.826 174.711 483.358 171.986C477.89 169.26 473.5 166.951 473.552 166.838C473.604 166.725 478.09 168.852 483.558 171.578C489.026 174.303 493.417 176.612 493.364 176.725Z" fill="#263238"/>
+                    <path d="M501.258 136.493C501.354 132.101 501.38 127.483 501.38 127.483C501.38 127.483 495.738 126.398 494.756 118.985C493.817 111.92 496.442 95.3323 496.442 95.3323C504.683 92.2248 513.246 95.0458 518.888 101.712L517.489 137.361C517.323 141.501 513.629 144.661 509.195 144.452C504.709 144.235 501.163 140.677 501.258 136.493Z" fill="#B78876"/>
+                    <path d="M496.007 108.587C496 108.83 496.085 109.067 496.247 109.249C496.409 109.432 496.634 109.546 496.877 109.568C497 109.579 497.125 109.566 497.243 109.528C497.361 109.491 497.47 109.429 497.563 109.348C497.657 109.267 497.733 109.167 497.787 109.056C497.841 108.944 497.871 108.823 497.876 108.7C497.884 108.457 497.798 108.221 497.636 108.04C497.474 107.859 497.249 107.747 497.007 107.727C496.883 107.709 496.757 107.717 496.636 107.751C496.516 107.786 496.404 107.846 496.309 107.928C496.215 108.009 496.138 108.11 496.086 108.224C496.034 108.338 496.007 108.462 496.007 108.587Z" fill="#263238"/>
+                    <path d="M495.659 107.346C495.772 107.467 496.529 106.955 497.528 106.99C498.528 107.024 499.267 107.545 499.389 107.424C499.511 107.302 499.337 107.146 499.015 106.894C498.58 106.579 498.057 106.407 497.52 106.399C496.99 106.379 496.468 106.532 496.033 106.833C495.712 107.068 495.598 107.285 495.659 107.346Z" fill="#263238"/>
+                    <path d="M506.361 109.229C506.351 109.473 506.436 109.711 506.598 109.894C506.76 110.077 506.987 110.19 507.23 110.21C507.355 110.229 507.482 110.22 507.603 110.185C507.724 110.15 507.836 110.089 507.931 110.007C508.026 109.924 508.102 109.822 508.154 109.707C508.206 109.592 508.232 109.468 508.23 109.342C508.24 109.099 508.155 108.862 507.992 108.68C507.83 108.499 507.604 108.388 507.361 108.37C507.237 108.351 507.111 108.359 506.99 108.394C506.87 108.428 506.758 108.488 506.663 108.57C506.568 108.652 506.492 108.753 506.44 108.867C506.388 108.98 506.361 109.104 506.361 109.229Z" fill="#263238"/>
+                    <path d="M506.292 107.988C506.405 108.118 507.161 107.606 508.161 107.632C509.16 107.658 509.899 108.187 510.03 108.066C510.16 107.944 509.969 107.788 509.647 107.545C509.219 107.222 508.697 107.045 508.161 107.042C507.629 107.026 507.106 107.178 506.665 107.476C506.352 107.71 506.239 107.927 506.292 107.988Z" fill="#263238"/>
+                    <path d="M502.397 115.444C501.863 115.261 501.308 115.147 500.745 115.105C500.484 115.105 500.241 115.01 500.206 114.836C500.185 114.565 500.252 114.294 500.397 114.064L501.214 112.111C501.975 110.451 502.6 108.732 503.083 106.972C502.193 108.567 501.432 110.23 500.806 111.946C500.536 112.632 500.267 113.291 500.015 113.916C499.846 114.226 499.791 114.585 499.858 114.932C499.892 115.026 499.948 115.111 500.02 115.18C500.092 115.249 500.18 115.301 500.275 115.331C500.42 115.373 500.569 115.396 500.719 115.4C501.274 115.486 501.838 115.5 502.397 115.444Z" fill="#263238"/>
+                    <path d="M501.38 127.483C504.858 127.622 508.306 126.796 511.342 125.096C511.342 125.096 508.813 130.105 501.432 129.228L501.38 127.483Z" fill="#A36957"/>
+                    <path d="M509.56 105.028C509.352 105.349 508.569 105.21 507.7 105.028C506.831 104.846 506.066 104.698 505.961 104.325C505.857 103.952 506.77 103.457 507.935 103.691C509.1 103.926 509.769 104.75 509.56 105.028Z" fill="#263238"/>
+                    <path d="M499.415 103.552C499.337 103.926 498.502 104.064 497.546 104.108C496.59 104.151 495.747 104.108 495.634 103.726C495.521 103.344 496.329 102.806 497.485 102.754C498.641 102.702 499.493 103.196 499.415 103.552Z" fill="#263238"/>
+                    <path d="M502.414 117.883C502.305 117.857 502.189 117.869 502.087 117.916C501.984 117.963 501.901 118.043 501.849 118.144C501.8 118.232 501.774 118.332 501.775 118.433C501.777 118.535 501.804 118.634 501.855 118.721C501.907 118.809 501.98 118.881 502.068 118.932C502.157 118.982 502.256 119.009 502.358 119.009C502.459 119.009 502.559 118.982 502.647 118.932C502.735 118.881 502.809 118.809 502.86 118.721C502.912 118.634 502.939 118.535 502.94 118.433C502.941 118.332 502.916 118.232 502.866 118.144C502.804 118.027 502.704 117.935 502.582 117.883C502.46 117.831 502.325 117.822 502.197 117.857" fill="#A36957"/>
+                    <path d="M502.648 117.987C502.648 117.944 502.483 117.692 502.04 117.788C501.907 117.822 501.786 117.891 501.688 117.987C501.591 118.083 501.52 118.203 501.483 118.334C501.437 118.501 501.441 118.677 501.495 118.841C501.549 119.005 501.651 119.149 501.788 119.254C501.932 119.353 502.104 119.406 502.279 119.406C502.454 119.406 502.625 119.353 502.77 119.254C502.886 119.177 502.977 119.068 503.032 118.94C503.087 118.812 503.105 118.671 503.083 118.534C502.996 118.074 502.657 118.005 502.64 118.065C502.622 118.126 502.761 118.282 502.735 118.551C502.729 118.618 502.707 118.682 502.671 118.738C502.635 118.794 502.585 118.84 502.527 118.873C502.459 118.911 502.383 118.932 502.305 118.932C502.227 118.932 502.151 118.911 502.083 118.873C502.023 118.821 501.976 118.755 501.949 118.68C501.922 118.606 501.914 118.526 501.927 118.447C501.937 118.379 501.963 118.314 502.004 118.258C502.045 118.202 502.099 118.156 502.162 118.126C502.405 117.979 502.622 118.048 502.648 117.987Z" fill="#263238"/>
+                    <path d="M515.515 110.418C514.645 112.449 512.489 114.02 512.785 116.216C512.976 117.631 513.889 118.951 513.715 120.374C513.489 122.11 511.637 123.395 511.368 125.174C511.046 127.353 513.176 129.046 514.019 131.077C515.263 134.045 513.68 137.378 513.637 140.625C513.688 143.089 514.632 145.452 516.295 147.275C517.957 149.097 520.225 150.256 522.678 150.537C524.66 150.702 526.894 150.103 527.894 148.402C528.763 146.996 528.572 145.208 529.076 143.654C529.841 141.328 532.058 139.626 532.554 137.231C533.423 132.891 528.12 129.245 528.468 124.801C528.616 122.9 529.789 121.251 530.285 119.411C530.6 118.201 530.624 116.935 530.355 115.714C530.086 114.494 529.532 113.354 528.737 112.389C527.425 110.835 525.529 109.785 524.391 108.118C523.13 106.2 523.087 103.778 522.652 101.513C522.068 98.7589 520.795 96.198 518.951 94.0691C517.107 91.9403 514.752 90.313 512.107 89.3393C509.462 88.3657 506.613 88.0775 503.826 88.5017C501.04 88.9259 498.406 90.0486 496.172 91.7649C496.172 91.7649 494.911 97.485 500.797 98.4485C506.682 99.412 509.403 98.301 510.064 100.653C509.908 101.622 509.985 102.614 510.287 103.548C510.589 104.482 511.108 105.331 511.803 106.026C514.202 108.613 516.488 108.057 515.515 110.418Z" fill="#263238"/>
+                    <path d="M524.86 150.095C524.679 150.101 524.498 150.083 524.321 150.042C523.812 149.952 523.311 149.816 522.826 149.634C521.031 148.947 519.457 147.786 518.271 146.275C517.439 145.233 516.787 144.059 516.341 142.803C515.833 141.373 515.566 139.868 515.55 138.35C515.532 136.678 515.742 135.01 516.176 133.394C516.413 132.541 516.703 131.703 517.045 130.886C517.404 130.072 517.72 129.241 517.993 128.395C518.232 127.561 518.232 126.676 517.993 125.843C517.738 125.022 517.409 124.226 517.01 123.464C516.607 122.709 516.267 121.923 515.993 121.112C515.726 120.31 515.663 119.453 515.811 118.621C516.158 116.989 517.149 115.774 517.741 114.533C518.304 113.384 518.573 112.113 518.523 110.835C518.444 108.964 517.764 107.169 516.584 105.714C516.127 105.204 515.637 104.725 515.115 104.281C515.725 104.623 516.269 105.07 516.724 105.601C517.99 107.054 518.736 108.886 518.845 110.809C518.917 112.143 518.654 113.473 518.08 114.68C517.48 115.965 516.515 117.189 516.219 118.682C515.924 120.175 516.628 121.746 517.402 123.256C517.824 124.039 518.167 124.862 518.427 125.712C518.684 126.621 518.684 127.582 518.427 128.49C518.138 129.366 517.804 130.226 517.428 131.068C517.086 131.867 516.795 132.688 516.558 133.524C516.127 135.1 515.913 136.726 515.924 138.359C515.897 141.14 516.796 143.851 518.48 146.067C519.606 147.559 521.104 148.729 522.826 149.461C524.122 149.964 524.869 150.042 524.86 150.095Z" fill="#455A64"/>
+                    <path d="M523.991 106.295C523.567 106.405 523.133 106.469 522.696 106.486C521.503 106.613 520.298 106.581 519.114 106.391C518.216 106.258 517.354 105.948 516.578 105.478C515.802 105.009 515.127 104.389 514.594 103.656C514.096 102.729 513.7 101.751 513.411 100.74C513.04 99.7296 512.343 98.8715 511.429 98.3009C509.525 97.0943 507.291 96.9468 505.344 96.7124C503.548 96.623 501.804 96.0794 500.276 95.1327C499.252 94.4555 498.513 93.4271 498.198 92.2422C498.122 91.9211 498.101 91.5894 498.137 91.2614C498.137 91.0357 498.189 90.9229 498.207 90.9229C498.217 91.3528 498.272 91.7804 498.372 92.1988C498.732 93.3067 499.47 94.253 500.458 94.8723C501.958 95.7461 503.652 96.2352 505.387 96.2958C507.335 96.5215 509.647 96.6343 511.681 97.9189C512.677 98.5431 513.435 99.4808 513.837 100.584C514.11 101.569 514.485 102.524 514.959 103.431C515.971 104.818 517.488 105.753 519.184 106.035C520.33 106.247 521.497 106.326 522.661 106.269C523.104 106.244 523.549 106.253 523.991 106.295Z" fill="#455A64"/>
+                    <path d="M521.835 99.2298C521.508 99.3391 521.163 99.3891 520.818 99.3773C519.198 99.3882 517.637 98.7651 516.471 97.6413C515.939 97.1089 515.486 96.504 515.124 95.8446C514.341 94.5252 513.585 92.902 511.959 92.225C510.393 91.7004 508.725 91.5546 507.091 91.7997C505.713 91.993 504.314 91.993 502.936 91.7997C501.977 91.6668 501.074 91.2701 500.328 90.6539C500.135 90.4861 499.966 90.2935 499.824 90.081C499.719 89.9306 499.676 89.8525 499.693 89.8467C499.693 89.8467 499.937 90.1244 500.441 90.515C501.184 91.0429 502.048 91.3771 502.953 91.4872C504.307 91.6396 505.674 91.6162 507.022 91.4178C508.727 91.1397 510.474 91.2889 512.107 91.8518C512.947 92.2284 513.666 92.8292 514.185 93.5878C514.643 94.2644 515.064 94.9657 515.445 95.6883C515.788 96.3192 516.212 96.9028 516.706 97.4243C517.142 97.8653 517.644 98.2371 518.193 98.5267C519.001 98.9482 519.89 99.1938 520.801 99.2471C521.47 99.2384 521.826 99.1864 521.835 99.2298Z" fill="#455A64"/>
+                    <path d="M527.451 148.22C527.408 148.22 527.686 147.647 528.007 146.57C528.443 145.059 528.636 143.489 528.581 141.918C528.518 139.592 527.882 137.317 526.729 135.295C526.095 134.158 525.13 133.142 524.339 131.893C523.92 131.256 523.625 130.546 523.469 129.801C523.332 129.016 523.398 128.209 523.661 127.457C524.148 125.955 525.017 124.697 525.208 123.317C525.399 121.937 524.739 120.713 524.078 119.558C523.737 118.997 523.427 118.417 523.148 117.822C522.893 117.245 522.726 116.634 522.652 116.008C522.571 114.905 522.605 113.797 522.757 112.701C523.035 111.152 522.89 109.557 522.339 108.083C522.093 107.567 521.744 107.106 521.313 106.729C521.313 106.729 521.357 106.729 521.418 106.781C521.521 106.832 521.615 106.9 521.696 106.981C522.036 107.264 522.312 107.616 522.504 108.014C523.133 109.501 523.329 111.134 523.07 112.727C522.95 113.802 522.935 114.887 523.026 115.965C523.241 117.178 523.721 118.328 524.434 119.333C524.805 119.919 525.122 120.538 525.382 121.181C525.656 121.876 525.746 122.629 525.643 123.369C525.434 124.888 524.539 126.172 524.087 127.587C523.849 128.27 523.787 129.001 523.904 129.714C524.056 130.404 524.333 131.06 524.721 131.65C525.46 132.856 526.46 133.889 527.095 135.078C528.259 137.169 528.881 139.517 528.903 141.909C528.93 143.51 528.683 145.105 528.173 146.623C528.033 147.033 527.865 147.434 527.668 147.82C527.615 147.963 527.542 148.098 527.451 148.22Z" fill="#455A64"/>
+                    <path d="M492.043 309.954C492.043 309.954 486.184 254.541 485.845 234.065C485.506 213.589 495.068 193.382 495.068 193.382L532.519 191.828C532.519 191.828 539.926 212.599 540.056 221.34C540.317 238.301 535.545 255.044 536.092 268.498L537.344 309.989" fill="#263238"/>
+                    <path d="M538.604 241.825C538.409 241.994 538.202 242.151 537.987 242.293L537.648 242.528L537.283 242.884C536.961 243.162 536.669 243.473 536.413 243.812C535.205 245.288 534.327 247.935 533.484 251.225C533.053 253.05 532.417 254.82 531.588 256.503C531.337 256.963 531.046 257.402 530.719 257.813C530.563 258.022 530.415 258.247 530.232 258.447L529.659 259.02C528.837 259.787 527.882 260.398 526.842 260.825C524.747 261.745 522.374 262.179 520.218 263.264C518.009 264.451 516.302 266.392 515.41 268.733C514.35 271.085 513.672 273.55 512.802 275.859C511.933 278.168 510.759 280.373 508.89 281.779C507.103 283.019 504.981 283.688 502.805 283.697C500.788 283.819 498.919 283.758 497.241 284.01C495.731 284.166 494.288 284.71 493.051 285.589C492.148 286.294 491.471 287.248 491.104 288.332C490.87 289.016 490.82 289.749 490.956 290.459C491.06 290.945 491.191 291.179 491.164 291.188C491.025 290.97 490.924 290.729 490.869 290.476C490.685 289.752 490.71 288.991 490.938 288.28C491.284 287.142 491.966 286.134 492.894 285.39C494.162 284.434 495.663 283.835 497.241 283.654C498.98 283.376 500.831 283.411 502.822 283.28C504.935 283.267 506.993 282.613 508.725 281.406C510.482 279.873 511.779 277.884 512.472 275.659C513.341 273.376 513.976 270.903 515.08 268.507C516.015 266.07 517.799 264.052 520.105 262.822C522.347 261.711 524.721 261.285 526.764 260.4C527.764 259.987 528.682 259.399 529.476 258.664L530.024 258.117C530.198 257.926 530.345 257.709 530.502 257.509C530.808 257.115 531.079 256.694 531.31 256.251C532.143 254.592 532.788 252.845 533.232 251.043C534.101 247.762 535.048 245.08 536.326 243.595C536.581 243.257 536.872 242.949 537.196 242.675C537.335 242.554 537.456 242.432 537.578 242.337L537.935 242.111C538.152 242.002 538.375 241.907 538.604 241.825Z" fill="#FAFAFA"/>
+                    <path d="M538.83 216.184C538.87 216.428 538.887 216.675 538.882 216.922C538.88 217.639 538.792 218.352 538.621 219.048C537.873 221.588 536.402 223.855 534.388 225.576C533.058 226.796 531.601 227.87 530.041 228.779C528.363 229.768 526.512 230.714 524.608 231.791C522.608 232.861 520.746 234.17 519.061 235.688C517.334 237.4 515.911 239.393 514.854 241.582C513.788 243.8 512.571 245.944 511.211 247.996C510.52 248.953 509.721 249.827 508.829 250.6C507.95 251.347 506.984 251.985 505.952 252.501C504.084 253.417 502.138 254.164 500.136 254.732C498.276 255.305 496.537 255.817 495.024 256.468C493.652 257.013 492.345 257.712 491.13 258.551C490.216 259.184 489.393 259.941 488.687 260.799C488.096 261.544 487.602 262.36 487.218 263.23C487.28 262.989 487.361 262.754 487.461 262.527C487.746 261.871 488.111 261.253 488.548 260.686C489.241 259.792 490.061 259.002 490.982 258.343C492.203 257.474 493.518 256.746 494.903 256.173C496.577 255.491 498.287 254.898 500.023 254.393C501.996 253.812 503.916 253.063 505.761 252.154C506.739 251.644 507.658 251.027 508.499 250.314C509.357 249.551 510.127 248.695 510.794 247.762C512.135 245.719 513.34 243.591 514.402 241.391C515.492 239.153 516.963 237.121 518.748 235.384C520.462 233.843 522.36 232.52 524.399 231.444C526.312 230.376 528.163 229.447 529.841 228.466C531.397 227.588 532.854 226.546 534.188 225.359C536.185 223.69 537.668 221.49 538.465 219.014C538.688 218.086 538.811 217.138 538.83 216.184Z" fill="#FAFAFA"/>
+                    <path d="M486.036 236.964C486.002 236.91 485.975 236.852 485.958 236.79C485.893 236.623 485.837 236.452 485.793 236.278C485.643 235.588 485.673 234.871 485.879 234.195C486.366 232.459 488.288 230.228 491.382 229.126C492.93 228.596 494.677 228.258 496.503 227.807C498.019 227.556 499.453 226.947 500.685 226.03C501.918 225.114 502.913 223.916 503.588 222.538C504.082 221.526 504.515 220.486 504.883 219.422C505.563 217.111 506.487 214.88 507.639 212.764C508.959 210.685 510.963 209.129 513.307 208.363C515.439 207.673 517.614 207.122 519.818 206.714C521.785 206.337 523.69 205.689 525.478 204.787C526.992 203.923 528.298 202.738 529.303 201.315C530.787 199.261 531.634 196.816 531.737 194.284C531.741 193.355 531.68 192.427 531.554 191.507C531.817 192.409 531.937 193.346 531.911 194.284C531.877 196.87 531.059 199.386 529.563 201.498C528.546 202.967 527.212 204.192 525.66 205.082C523.849 206.017 521.914 206.692 519.914 207.087C517.73 207.501 515.576 208.055 513.463 208.745C511.213 209.481 509.289 210.976 508.021 212.972C506.888 215.059 505.976 217.258 505.3 219.535C504.925 220.618 504.48 221.676 503.97 222.703C503.455 223.689 502.799 224.596 502.023 225.394C500.496 226.784 498.617 227.729 496.59 228.128C494.747 228.596 493.008 228.892 491.487 229.395C488.47 230.419 486.558 232.528 486.045 234.212C485.834 234.862 485.777 235.551 485.879 236.226C485.953 236.467 486.005 236.714 486.036 236.964Z" fill="#FAFAFA"/>
+                    <path d="M535.614 283.836C535.649 284.016 535.67 284.199 535.675 284.383C535.692 284.909 535.636 285.434 535.51 285.945C534.963 287.827 533.808 289.476 532.224 290.632C531.166 291.474 529.995 292.163 528.746 292.681C527.416 293.245 525.947 293.696 524.4 294.174C522.793 294.642 521.222 295.222 519.697 295.91C518.112 296.666 516.691 297.724 515.515 299.026C514.246 300.345 513.15 301.795 511.933 303.08C510.769 304.324 509.417 305.378 507.926 306.204C505.388 307.587 502.549 308.326 499.658 308.357C497.722 308.378 495.798 308.058 493.973 307.411C493.478 307.24 492.995 307.034 492.53 306.795C492.36 306.724 492.2 306.634 492.052 306.525C492.227 306.574 492.398 306.634 492.565 306.708C493.042 306.912 493.53 307.091 494.025 307.246C495.847 307.816 497.75 308.083 499.658 308.036C502.485 307.963 505.253 307.209 507.726 305.84C509.17 305.023 510.481 303.989 511.612 302.776C512.803 301.508 513.889 300.068 515.185 298.713C516.431 297.363 517.931 296.272 519.601 295.502C521.149 294.812 522.744 294.232 524.374 293.766C525.904 293.297 527.364 292.898 528.72 292.325C529.933 291.829 531.074 291.172 532.111 290.372C533.668 289.273 534.83 287.703 535.423 285.893C535.551 285.215 535.615 284.526 535.614 283.836Z" fill="#FAFAFA"/>
+                    <path d="M531.345 168.791L524.095 168.965C523.816 170.424 523.261 171.818 522.461 173.07C516.375 162.568 511.707 148.506 510.542 142.855C510.716 142.291 510.916 141.666 511.168 140.972C511.349 139.917 511.316 138.837 511.072 137.795C510.864 136.536 510.516 134.844 510.412 134.062C510.09 131.667 509.699 131.294 508.864 131.563C507.734 131.936 509.334 138.272 508.404 138.411C507.899 138.481 507.291 136.311 507.117 134.531C506.943 132.752 506.126 127.266 505.543 126.901C504.674 126.363 503.918 127.214 504.144 128.985C504.37 130.755 504.639 136.137 503.7 136.215C502.762 136.293 501.962 127.197 501.962 127.197C501.962 127.197 502.11 125.218 501.014 125.261C499.049 125.348 500.588 134.93 500.753 135.842C500.875 136.467 499.884 136.588 499.762 135.903C499.641 135.217 499.189 126.815 497.154 126.884C495.607 126.884 498.345 134.774 497.476 136.597C496.607 138.42 496.016 130.417 494.546 130.521C493.999 130.564 493.59 130.669 494.598 135.191C495.564 138.784 496.725 142.322 498.076 145.789C500.406 158.332 510.629 198.459 526.651 191.116C535.622 187.002 539.256 168.791 539.256 168.791H531.345Z" fill="#B78876"/>
+                    <path d="M500.44 136.449C500.509 136.467 500.58 136.467 500.649 136.449C500.754 136.417 500.844 136.349 500.902 136.257C500.961 136.165 500.986 136.054 500.97 135.946C500.97 135.408 500.866 134.627 500.744 133.611C500.541 132.387 500.407 131.153 500.344 129.913C500.344 129.184 500.344 128.403 500.388 127.578C500.401 127.159 500.444 126.741 500.518 126.329C500.588 125.938 500.849 125.461 501.153 125.539H501.205C501.509 125.539 501.753 125.764 501.848 126.129C501.956 126.507 501.997 126.9 501.97 127.292C502.149 129.723 502.46 132.142 502.9 134.54C502.97 134.861 503.039 135.191 503.144 135.521C503.19 135.689 503.248 135.855 503.318 136.015C503.362 136.105 503.411 136.192 503.465 136.276C503.504 136.339 503.558 136.393 503.621 136.432C503.685 136.471 503.756 136.495 503.83 136.502C503.957 136.488 504.077 136.436 504.174 136.355C504.272 136.273 504.343 136.164 504.378 136.041C504.453 135.872 504.508 135.694 504.543 135.512C504.611 135.162 504.657 134.809 504.682 134.453C504.762 133.007 504.741 131.557 504.622 130.113C504.512 129.392 504.482 128.662 504.535 127.934C504.566 127.62 504.719 127.331 504.961 127.127C505.016 127.094 505.078 127.073 505.143 127.066C505.207 127.058 505.273 127.064 505.334 127.084C505.408 127.101 505.479 127.131 505.543 127.171C505.587 127.204 505.62 127.249 505.639 127.301C505.913 128.005 506.114 128.735 506.239 129.479C506.395 130.243 506.525 131.033 506.647 131.823C506.769 132.613 506.882 133.411 506.977 134.219C507.052 135.052 507.186 135.878 507.377 136.692C507.48 137.109 507.611 137.518 507.769 137.916C507.857 138.14 507.981 138.348 508.134 138.533C508.192 138.61 508.272 138.668 508.363 138.702C508.453 138.736 508.552 138.743 508.647 138.724C508.735 138.695 508.814 138.643 508.876 138.575C508.939 138.507 508.982 138.423 509.003 138.333C509.106 137.889 509.138 137.433 509.099 136.979C509.099 136.545 509.047 136.111 509.003 135.694C508.942 134.965 508.873 134.245 508.847 133.533C508.825 133.183 508.825 132.832 508.847 132.483C508.864 132.328 508.902 132.176 508.96 132.031C508.978 131.984 509.004 131.939 509.038 131.901H509.151C509.725 131.667 509.916 132.465 510.072 133.108C510.229 133.75 510.29 134.479 510.429 135.165C510.655 136.528 510.95 137.89 511.098 139.192C511.199 139.816 511.175 140.453 511.029 141.067C510.82 141.692 510.611 142.308 510.411 142.925V142.985V143.038C511.43 147.302 512.728 151.495 514.297 155.589C515.671 159.295 517.053 162.533 518.261 165.137C519.47 167.741 520.565 169.781 521.313 171.152L522.182 172.706C522.276 172.891 522.39 173.066 522.521 173.227C522.448 173.034 522.358 172.848 522.252 172.671L521.382 171.083C520.669 169.685 519.644 167.611 518.461 165.007C517.279 162.403 515.94 159.165 514.602 155.459C513.07 151.371 511.798 147.19 510.794 142.942V143.064C510.994 142.456 511.194 141.84 511.402 141.223C511.583 140.547 511.619 139.84 511.507 139.149C511.35 137.786 511.063 136.467 510.837 135.095C510.707 134.418 510.62 133.724 510.481 133.012C510.472 132.647 510.41 132.284 510.298 131.936C510.199 131.724 510.03 131.553 509.82 131.45C509.597 131.377 509.357 131.377 509.133 131.45H508.994C508.921 131.473 508.853 131.512 508.794 131.563C508.698 131.644 508.623 131.749 508.577 131.866C508.497 132.054 508.447 132.253 508.429 132.457C508.403 132.832 508.403 133.209 508.429 133.585C508.429 134.314 508.534 135.043 508.594 135.772C508.594 136.198 508.664 136.64 508.681 137.031C508.716 137.423 508.695 137.817 508.621 138.203C508.621 138.29 508.551 138.272 508.621 138.316L508.568 138.264C508.458 138.122 508.37 137.964 508.308 137.795C508.156 137.419 508.031 137.034 507.934 136.64C507.743 135.85 507.612 135.046 507.543 134.236C507.45 133.42 507.337 132.613 507.204 131.814C507.082 131.016 506.943 130.235 506.786 129.453C506.655 128.658 506.434 127.881 506.126 127.136C506.066 127.011 505.973 126.906 505.856 126.832C505.755 126.773 505.647 126.727 505.534 126.693C505.41 126.661 505.281 126.653 505.154 126.671C505.028 126.689 504.906 126.732 504.795 126.797C504.616 126.931 504.467 127.1 504.356 127.294C504.245 127.489 504.176 127.704 504.152 127.926C504.096 128.32 504.096 128.72 504.152 129.115C504.152 129.488 504.239 129.853 504.265 130.217C504.386 131.637 504.412 133.064 504.343 134.488C504.323 134.826 504.279 135.162 504.213 135.495C504.188 135.65 504.144 135.801 504.083 135.946C504.06 136.003 504.028 136.056 503.987 136.102C503.987 136.18 503.926 136.102 503.935 136.206C503.935 136.12 503.935 136.206 503.935 136.094C503.896 136.035 503.862 135.974 503.83 135.911C503.77 135.772 503.717 135.616 503.665 135.469C503.57 135.156 503.5 134.835 503.431 134.522C502.977 132.146 502.649 129.747 502.448 127.335C502.474 126.899 502.424 126.461 502.3 126.042C502.243 125.823 502.126 125.625 501.961 125.469C501.876 125.387 501.775 125.323 501.665 125.281C501.554 125.24 501.436 125.221 501.318 125.226H501.37C501.223 125.205 501.073 125.227 500.938 125.29C500.804 125.354 500.691 125.455 500.614 125.582C500.485 125.789 500.396 126.019 500.353 126.259C500.28 126.69 500.239 127.125 500.231 127.561C500.231 128.429 500.231 129.184 500.231 129.922C500.314 131.169 500.474 132.41 500.71 133.637C500.857 134.644 500.97 135.425 501.023 135.955C501.039 136.047 501.023 136.143 500.977 136.225C500.931 136.308 500.858 136.371 500.77 136.406C500.51 136.432 500.431 136.441 500.44 136.449Z" fill="#A36957"/>
+                    <path d="M443.821 180.743C442.124 180.707 440.431 180.903 438.787 181.325C434.293 182.506 426.547 187.193 426.226 192.982H431.859C431.859 192.982 428.703 199.683 429.625 199.058C432.033 197.444 436.814 192.592 436.814 192.592L443.821 180.743Z" fill="#B78876"/>
+                    <path d="M520.61 79.8559C520.479 79.8559 519.975 75.2208 519.471 69.4399C518.967 63.659 518.654 59.0239 518.775 59.0239C518.897 59.0239 519.41 63.659 519.914 69.4399C520.418 75.2208 520.731 79.8559 520.61 79.8559Z" fill="#263238"/>
+                    <path d="M545.307 59.3798C545.403 59.4493 541.604 64.961 536.814 71.688C532.024 78.415 528.051 83.8401 527.946 83.7359C527.842 83.6317 531.65 78.1547 536.44 71.4277C541.23 64.7007 545.203 59.3104 545.307 59.3798Z" fill="#263238"/>
+                    <path d="M555.565 84.3609C555.565 84.4824 551.149 85.4979 545.655 86.6263C540.16 87.7547 535.675 88.5707 535.649 88.4491C535.622 88.3276 540.056 87.3121 545.559 86.1837C551.062 85.0553 555.504 84.2393 555.565 84.3609Z" fill="#263238"/>
+                    <path d="M259.931 203.581L229.156 361.383L225.157 382.042L430.32 381.052C439.535 381.009 447.707 372.841 450.654 360.706L487.044 211.731C489.295 202.522 484.358 192.939 477.368 192.948L269.667 193.165C265.147 193.156 261.095 197.427 259.931 203.581Z" fill="currentColor"/>
+                    <g opacity="0.5">
+                    <path d="M259.931 203.581L229.156 361.383L225.157 382.042L430.32 381.052C439.535 381.009 447.707 372.841 450.654 360.706L487.044 211.731C489.295 202.522 484.358 192.939 477.368 192.948L269.667 193.165C265.147 193.156 261.095 197.427 259.931 203.581Z" fill="black"/>
+                    </g>
+                    <path d="M410.665 350.672L388.931 175.848C388.062 168.687 382.333 163.34 375.578 163.366L327.939 163.514C326.168 163.534 324.421 163.913 322.802 164.63C321.183 165.346 319.728 166.384 318.524 167.68L295.921 191.698L163.435 192.41C155.341 192.453 149.117 200.109 150.186 208.702L170.363 370.28C171.233 377.432 176.962 382.771 183.699 382.762L414.637 382.302C440.352 382.831 442.812 375.254 442.812 375.254C413.29 381.772 410.665 350.715 410.665 350.672Z" fill="currentColor"/>
+                    <path opacity="0.87" d="M238.891 341.801V352H237.659C237.477 352 237.323 351.972 237.197 351.916C237.076 351.855 236.954 351.753 236.833 351.608L232.024 345.525C232.043 345.707 232.054 345.884 232.059 346.057C232.068 346.225 232.073 346.384 232.073 346.533V352H229.987V341.801H231.233C231.336 341.801 231.422 341.806 231.492 341.815C231.562 341.824 231.625 341.843 231.681 341.871C231.737 341.894 231.791 341.929 231.842 341.976C231.893 342.023 231.952 342.086 232.017 342.165L236.868 348.29C236.845 348.094 236.828 347.905 236.819 347.723C236.81 347.536 236.805 347.361 236.805 347.198V341.801H238.891ZM243.945 344.629C244.496 344.629 244.997 344.715 245.45 344.888C245.903 345.061 246.29 345.308 246.612 345.63C246.939 345.952 247.191 346.344 247.368 346.806C247.55 347.263 247.641 347.779 247.641 348.353C247.641 348.932 247.55 349.454 247.368 349.921C247.191 350.383 246.939 350.777 246.612 351.104C246.29 351.426 245.903 351.676 245.45 351.853C244.997 352.026 244.496 352.112 243.945 352.112C243.39 352.112 242.883 352.026 242.426 351.853C241.973 351.676 241.581 351.426 241.25 351.104C240.923 350.777 240.669 350.383 240.487 349.921C240.31 349.454 240.221 348.932 240.221 348.353C240.221 347.779 240.31 347.263 240.487 346.806C240.669 346.344 240.923 345.952 241.25 345.63C241.581 345.308 241.973 345.061 242.426 344.888C242.883 344.715 243.39 344.629 243.945 344.629ZM243.945 350.502C244.444 350.502 244.811 350.327 245.044 349.977C245.282 349.622 245.401 349.086 245.401 348.367C245.401 347.648 245.282 347.114 245.044 346.764C244.811 346.414 244.444 346.239 243.945 346.239C243.432 346.239 243.056 346.414 242.818 346.764C242.58 347.114 242.461 347.648 242.461 348.367C242.461 349.086 242.58 349.622 242.818 349.977C243.056 350.327 243.432 350.502 243.945 350.502ZM261.88 346.897C261.88 347.634 261.752 348.316 261.495 348.941C261.243 349.562 260.886 350.101 260.424 350.558C259.962 351.011 259.404 351.365 258.751 351.622C258.102 351.874 257.381 352 256.588 352H252.626V341.801H256.588C257.381 341.801 258.102 341.929 258.751 342.186C259.404 342.443 259.962 342.797 260.424 343.25C260.886 343.703 261.243 344.242 261.495 344.867C261.752 345.488 261.88 346.164 261.88 346.897ZM259.458 346.897C259.458 346.393 259.393 345.938 259.262 345.532C259.131 345.126 258.942 344.783 258.695 344.503C258.452 344.218 258.154 344.001 257.799 343.852C257.444 343.698 257.041 343.621 256.588 343.621H255.006V350.18H256.588C257.041 350.18 257.444 350.105 257.799 349.956C258.154 349.802 258.452 349.585 258.695 349.305C258.942 349.02 259.131 348.675 259.262 348.269C259.393 347.863 259.458 347.406 259.458 346.897ZM266.805 349.046C266.371 349.065 266.014 349.102 265.734 349.158C265.454 349.214 265.233 349.284 265.069 349.368C264.906 349.452 264.792 349.548 264.726 349.655C264.666 349.762 264.635 349.879 264.635 350.005C264.635 350.252 264.703 350.427 264.838 350.53C264.974 350.628 265.172 350.677 265.433 350.677C265.713 350.677 265.958 350.628 266.168 350.53C266.378 350.432 266.591 350.273 266.805 350.054V349.046ZM262.899 345.749C263.338 345.362 263.823 345.075 264.355 344.888C264.892 344.697 265.466 344.601 266.077 344.601C266.516 344.601 266.91 344.673 267.26 344.818C267.615 344.958 267.914 345.156 268.156 345.413C268.404 345.665 268.593 345.966 268.723 346.316C268.854 346.666 268.919 347.049 268.919 347.464V352H267.925C267.72 352 267.564 351.972 267.456 351.916C267.354 351.86 267.267 351.743 267.197 351.566L267.043 351.167C266.861 351.321 266.686 351.456 266.518 351.573C266.35 351.69 266.175 351.79 265.993 351.874C265.816 351.953 265.625 352.012 265.419 352.049C265.219 352.091 264.995 352.112 264.747 352.112C264.416 352.112 264.115 352.07 263.844 351.986C263.574 351.897 263.343 351.769 263.151 351.601C262.965 351.433 262.82 351.225 262.717 350.978C262.615 350.726 262.563 350.437 262.563 350.11C262.563 349.849 262.629 349.585 262.759 349.319C262.89 349.048 263.116 348.803 263.438 348.584C263.76 348.36 264.194 348.173 264.74 348.024C265.286 347.875 265.975 347.791 266.805 347.772V347.464C266.805 347.039 266.717 346.734 266.539 346.547C266.367 346.356 266.119 346.26 265.797 346.26C265.541 346.26 265.331 346.288 265.167 346.344C265.004 346.4 264.857 346.463 264.726 346.533C264.6 346.603 264.477 346.666 264.355 346.722C264.234 346.778 264.089 346.806 263.921 346.806C263.772 346.806 263.646 346.769 263.543 346.694C263.441 346.619 263.357 346.531 263.291 346.428L262.899 345.749ZM272.994 352.112C272.649 352.112 272.343 352.063 272.077 351.965C271.816 351.862 271.594 351.72 271.412 351.538C271.235 351.351 271.099 351.127 271.006 350.866C270.913 350.605 270.866 350.313 270.866 349.991V346.239H270.25C270.138 346.239 270.042 346.204 269.963 346.134C269.884 346.059 269.844 345.952 269.844 345.812V344.965L270.999 344.741L271.426 342.97C271.482 342.746 271.641 342.634 271.902 342.634H273.036V344.755H274.835V346.239H273.036V349.844C273.036 350.012 273.076 350.152 273.155 350.264C273.239 350.371 273.358 350.425 273.512 350.425C273.591 350.425 273.657 350.418 273.708 350.404C273.764 350.385 273.811 350.367 273.848 350.348C273.89 350.325 273.927 350.306 273.96 350.292C273.997 350.273 274.039 350.264 274.086 350.264C274.151 350.264 274.203 350.28 274.24 350.313C274.282 350.341 274.324 350.388 274.366 350.453L275.024 351.482C274.744 351.692 274.429 351.851 274.079 351.958C273.729 352.061 273.367 352.112 272.994 352.112ZM279.715 349.046C279.281 349.065 278.924 349.102 278.644 349.158C278.364 349.214 278.142 349.284 277.979 349.368C277.816 349.452 277.701 349.548 277.636 349.655C277.575 349.762 277.545 349.879 277.545 350.005C277.545 350.252 277.613 350.427 277.748 350.53C277.883 350.628 278.082 350.677 278.343 350.677C278.623 350.677 278.868 350.628 279.078 350.53C279.288 350.432 279.5 350.273 279.715 350.054V349.046ZM275.809 345.749C276.248 345.362 276.733 345.075 277.265 344.888C277.802 344.697 278.376 344.601 278.987 344.601C279.426 344.601 279.82 344.673 280.17 344.818C280.525 344.958 280.823 345.156 281.066 345.413C281.313 345.665 281.502 345.966 281.633 346.316C281.764 346.666 281.829 347.049 281.829 347.464V352H280.835C280.63 352 280.473 351.972 280.366 351.916C280.263 351.86 280.177 351.743 280.107 351.566L279.953 351.167C279.771 351.321 279.596 351.456 279.428 351.573C279.26 351.69 279.085 351.79 278.903 351.874C278.726 351.953 278.534 352.012 278.329 352.049C278.128 352.091 277.904 352.112 277.657 352.112C277.326 352.112 277.025 352.07 276.754 351.986C276.483 351.897 276.252 351.769 276.061 351.601C275.874 351.433 275.73 351.225 275.627 350.978C275.524 350.726 275.473 350.437 275.473 350.11C275.473 349.849 275.538 349.585 275.669 349.319C275.8 349.048 276.026 348.803 276.348 348.584C276.67 348.36 277.104 348.173 277.65 348.024C278.196 347.875 278.884 347.791 279.715 347.772V347.464C279.715 347.039 279.626 346.734 279.449 346.547C279.276 346.356 279.029 346.26 278.707 346.26C278.45 346.26 278.24 346.288 278.077 346.344C277.914 346.4 277.767 346.463 277.636 346.533C277.51 346.603 277.386 346.666 277.265 346.722C277.144 346.778 276.999 346.806 276.831 346.806C276.682 346.806 276.556 346.769 276.453 346.694C276.35 346.619 276.266 346.531 276.201 346.428L275.809 345.749ZM292.02 348.101L291.075 345.308C291.005 345.131 290.93 344.923 290.851 344.685C290.772 344.442 290.692 344.181 290.613 343.901C290.543 344.186 290.468 344.449 290.389 344.692C290.31 344.935 290.235 345.145 290.165 345.322L289.227 348.101H292.02ZM295.779 352H293.945C293.74 352 293.574 351.953 293.448 351.86C293.322 351.762 293.226 351.638 293.161 351.489L292.559 349.711H288.681L288.079 351.489C288.028 351.62 287.934 351.739 287.799 351.846C287.668 351.949 287.505 352 287.309 352H285.461L289.409 341.801H291.831L295.779 352ZM302.755 344.741L299.941 352H297.967L295.153 344.741H296.959C297.113 344.741 297.241 344.778 297.344 344.853C297.451 344.923 297.524 345.012 297.561 345.119L298.569 348.374C298.658 348.64 298.735 348.899 298.8 349.151C298.87 349.403 298.931 349.655 298.982 349.907C299.085 349.403 299.227 348.892 299.409 348.374L300.459 345.119C300.496 345.012 300.566 344.923 300.669 344.853C300.772 344.778 300.893 344.741 301.033 344.741H302.755ZM307.216 349.046C306.782 349.065 306.425 349.102 306.145 349.158C305.865 349.214 305.644 349.284 305.48 349.368C305.317 349.452 305.203 349.548 305.137 349.655C305.077 349.762 305.046 349.879 305.046 350.005C305.046 350.252 305.114 350.427 305.249 350.53C305.385 350.628 305.583 350.677 305.844 350.677C306.124 350.677 306.369 350.628 306.579 350.53C306.789 350.432 307.002 350.273 307.216 350.054V349.046ZM303.31 345.749C303.749 345.362 304.234 345.075 304.766 344.888C305.303 344.697 305.877 344.601 306.488 344.601C306.927 344.601 307.321 344.673 307.671 344.818C308.026 344.958 308.325 345.156 308.567 345.413C308.815 345.665 309.004 345.966 309.134 346.316C309.265 346.666 309.33 347.049 309.33 347.464V352H308.336C308.131 352 307.975 351.972 307.867 351.916C307.765 351.86 307.678 351.743 307.608 351.566L307.454 351.167C307.272 351.321 307.097 351.456 306.929 351.573C306.761 351.69 306.586 351.79 306.404 351.874C306.227 351.953 306.036 352.012 305.83 352.049C305.63 352.091 305.406 352.112 305.158 352.112C304.827 352.112 304.526 352.07 304.255 351.986C303.985 351.897 303.754 351.769 303.562 351.601C303.376 351.433 303.231 351.225 303.128 350.978C303.026 350.726 302.974 350.437 302.974 350.11C302.974 349.849 303.04 349.585 303.17 349.319C303.301 349.048 303.527 348.803 303.849 348.584C304.171 348.36 304.605 348.173 305.151 348.024C305.697 347.875 306.386 347.791 307.216 347.772V347.464C307.216 347.039 307.128 346.734 306.95 346.547C306.778 346.356 306.53 346.26 306.208 346.26C305.952 346.26 305.742 346.288 305.578 346.344C305.415 346.4 305.268 346.463 305.137 346.533C305.011 346.603 304.888 346.666 304.766 346.722C304.645 346.778 304.5 346.806 304.332 346.806C304.183 346.806 304.057 346.769 303.954 346.694C303.852 346.619 303.768 346.531 303.702 346.428L303.31 345.749ZM313.136 344.741V352H310.966V344.741H313.136ZM313.36 342.753C313.36 342.926 313.325 343.089 313.255 343.243C313.185 343.392 313.09 343.525 312.968 343.642C312.847 343.754 312.705 343.845 312.541 343.915C312.383 343.98 312.212 344.013 312.03 344.013C311.853 344.013 311.687 343.98 311.533 343.915C311.379 343.845 311.242 343.754 311.12 343.642C311.004 343.525 310.91 343.392 310.84 343.243C310.775 343.089 310.742 342.926 310.742 342.753C310.742 342.576 310.775 342.41 310.84 342.256C310.91 342.102 311.004 341.967 311.12 341.85C311.242 341.733 311.379 341.642 311.533 341.577C311.687 341.512 311.853 341.479 312.03 341.479C312.212 341.479 312.383 341.512 312.541 341.577C312.705 341.642 312.847 341.733 312.968 341.85C313.09 341.967 313.185 342.102 313.255 342.256C313.325 342.41 313.36 342.576 313.36 342.753ZM317.02 341.521V352H314.85V341.521H317.02ZM322.432 349.046C321.998 349.065 321.641 349.102 321.361 349.158C321.081 349.214 320.859 349.284 320.696 349.368C320.532 349.452 320.418 349.548 320.353 349.655C320.292 349.762 320.262 349.879 320.262 350.005C320.262 350.252 320.329 350.427 320.465 350.53C320.6 350.628 320.798 350.677 321.06 350.677C321.34 350.677 321.585 350.628 321.795 350.53C322.005 350.432 322.217 350.273 322.432 350.054V349.046ZM318.526 345.749C318.964 345.362 319.45 345.075 319.982 344.888C320.518 344.697 321.092 344.601 321.704 344.601C322.142 344.601 322.537 344.673 322.887 344.818C323.241 344.958 323.54 345.156 323.783 345.413C324.03 345.665 324.219 345.966 324.35 346.316C324.48 346.666 324.546 347.049 324.546 347.464V352H323.552C323.346 352 323.19 351.972 323.083 351.916C322.98 351.86 322.894 351.743 322.824 351.566L322.67 351.167C322.488 351.321 322.313 351.456 322.145 351.573C321.977 351.69 321.802 351.79 321.62 351.874C321.442 351.953 321.251 352.012 321.046 352.049C320.845 352.091 320.621 352.112 320.374 352.112C320.042 352.112 319.741 352.07 319.471 351.986C319.2 351.897 318.969 351.769 318.778 351.601C318.591 351.433 318.446 351.225 318.344 350.978C318.241 350.726 318.19 350.437 318.19 350.11C318.19 349.849 318.255 349.585 318.386 349.319C318.516 349.048 318.743 348.803 319.065 348.584C319.387 348.36 319.821 348.173 320.367 348.024C320.913 347.875 321.601 347.791 322.432 347.772V347.464C322.432 347.039 322.343 346.734 322.166 346.547C321.993 346.356 321.746 346.26 321.424 346.26C321.167 346.26 320.957 346.288 320.794 346.344C320.63 346.4 320.483 346.463 320.353 346.533C320.227 346.603 320.103 346.666 319.982 346.722C319.86 346.778 319.716 346.806 319.548 346.806C319.398 346.806 319.272 346.769 319.17 346.694C319.067 346.619 318.983 346.531 318.918 346.428L318.526 345.749ZM328.303 350.026C328.466 350.203 328.643 350.329 328.835 350.404C329.026 350.479 329.22 350.516 329.416 350.516C329.621 350.516 329.81 350.479 329.983 350.404C330.155 350.325 330.302 350.199 330.424 350.026C330.55 349.849 330.648 349.618 330.718 349.333C330.788 349.044 330.823 348.689 330.823 348.269C330.823 347.905 330.795 347.597 330.739 347.345C330.687 347.088 330.608 346.881 330.501 346.722C330.398 346.559 330.267 346.442 330.109 346.372C329.955 346.297 329.777 346.26 329.577 346.26C329.311 346.26 329.08 346.318 328.884 346.435C328.688 346.552 328.494 346.722 328.303 346.946V350.026ZM328.303 345.511C328.583 345.245 328.888 345.033 329.22 344.874C329.556 344.711 329.929 344.629 330.34 344.629C330.75 344.629 331.124 344.713 331.46 344.881C331.796 345.049 332.083 345.289 332.321 345.602C332.559 345.91 332.741 346.283 332.867 346.722C332.997 347.161 333.063 347.651 333.063 348.192C333.063 348.78 332.988 349.314 332.839 349.795C332.689 350.276 332.477 350.689 332.202 351.034C331.931 351.375 331.607 351.641 331.229 351.832C330.851 352.019 330.433 352.112 329.976 352.112C329.756 352.112 329.56 352.091 329.388 352.049C329.215 352.007 329.056 351.949 328.912 351.874C328.767 351.795 328.634 351.701 328.513 351.594C328.396 351.487 328.282 351.37 328.17 351.244L328.093 351.608C328.055 351.757 327.995 351.86 327.911 351.916C327.827 351.972 327.715 352 327.575 352H326.133V341.521H328.303V345.511ZM336.542 341.521V352H334.372V341.521H336.542ZM342.723 347.499C342.723 347.326 342.7 347.158 342.653 346.995C342.611 346.832 342.539 346.687 342.436 346.561C342.338 346.43 342.208 346.325 342.044 346.246C341.881 346.167 341.683 346.127 341.449 346.127C341.039 346.127 340.717 346.246 340.483 346.484C340.25 346.717 340.096 347.056 340.021 347.499H342.723ZM339.993 348.759C340.063 349.366 340.248 349.807 340.546 350.082C340.845 350.353 341.23 350.488 341.701 350.488C341.953 350.488 342.17 350.458 342.352 350.397C342.534 350.336 342.695 350.269 342.835 350.194C342.98 350.119 343.111 350.052 343.227 349.991C343.349 349.93 343.475 349.9 343.605 349.9C343.778 349.9 343.909 349.963 343.997 350.089L344.627 350.866C344.403 351.123 344.161 351.333 343.899 351.496C343.643 351.655 343.377 351.781 343.101 351.874C342.831 351.963 342.558 352.023 342.282 352.056C342.012 352.093 341.753 352.112 341.505 352.112C340.997 352.112 340.518 352.03 340.07 351.867C339.627 351.699 339.237 351.452 338.901 351.125C338.57 350.798 338.306 350.392 338.11 349.907C337.919 349.422 337.823 348.857 337.823 348.213C337.823 347.728 337.905 347.268 338.068 346.834C338.236 346.4 338.474 346.02 338.782 345.693C339.095 345.366 339.471 345.107 339.909 344.916C340.353 344.725 340.852 344.629 341.407 344.629C341.888 344.629 342.327 344.704 342.723 344.853C343.125 345.002 343.468 345.219 343.752 345.504C344.042 345.789 344.266 346.139 344.424 346.554C344.588 346.965 344.669 347.431 344.669 347.954C344.669 348.117 344.662 348.25 344.648 348.353C344.634 348.456 344.609 348.537 344.571 348.598C344.534 348.659 344.483 348.701 344.417 348.724C344.357 348.747 344.277 348.759 344.179 348.759H339.993Z" fill="#ffffff"/>
+                    <g opacity="0.5">
+                    <path d="M311.083 315.709L303.294 324.059L243.31 270.174L251.099 261.823L311.083 315.709Z" fill="white"/>
+                    <path d="M300.033 259.975L308.64 267.708L254.367 325.908L245.752 318.174L300.033 259.975Z" fill="white"/>
+                    </g>
+                    </svg>
+
+                </div>`,
+            info: "Showing: _START_-_END_/_TOTAL_ entries",
+            lengthMenu:
+                window_size === "desktop" ?'Counts per page <select class="custom-table-page-count">' +
+                '<option value="10">10</option>' +
+                '<option value="25">25</option>' +
+                '<option value="50">50</option>' +
+                '<option value="100">100</option>' +
+                "</select>" : '',
+            paginate: {
+                first: `<svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M4.34362 0.919211C4.55213 0.708929 4.55213 0.367994 4.34362 0.157712C4.13512 -0.0525706 3.79708 -0.0525706 3.58858 0.157712L0.156375 3.61925C0.130313 3.64553 0.107508 3.67386 0.0879612 3.70372C-0.0488672 3.91272 -0.0260625 4.19675 0.156375 4.38075L3.58858 7.84229C3.79708 8.05257 4.13512 8.05257 4.34362 7.84229C4.55213 7.63201 4.55213 7.29107 4.34362 7.08079L1.28894 4L4.34362 0.919211Z" fill="#1C1E27"/>
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M7.84362 0.919211C8.05213 0.708929 8.05213 0.367994 7.84362 0.157712C7.63512 -0.0525706 7.29708 -0.0525706 7.08858 0.157712L3.65638 3.61925C3.63031 3.64553 3.60751 3.67386 3.58796 3.70372C3.45113 3.91272 3.47394 4.19675 3.65638 4.38075L7.08858 7.84229C7.29708 8.05257 7.63512 8.05257 7.84362 7.84229C8.05213 7.63201 8.05213 7.29107 7.84362 7.08079L4.78894 4L7.84362 0.919211Z" fill="#1C1E27"/>
+                </svg>
+                `,
+                last: `<svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M3.65638 0.919211C3.44787 0.708929 3.44787 0.367994 3.65638 0.157712C3.86488 -0.0525706 4.20292 -0.0525706 4.41142 0.157712L7.84362 3.61925C7.86969 3.64553 7.89249 3.67386 7.91204 3.70372C8.04887 3.91272 8.02606 4.19675 7.84362 4.38075L4.41142 7.84229C4.20292 8.05257 3.86488 8.05257 3.65638 7.84229C3.44787 7.63201 3.44787 7.29107 3.65638 7.08079L6.71106 4L3.65638 0.919211Z" fill="#1C1E27"/>
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M0.156375 0.919211C-0.0521251 0.708929 -0.0521251 0.367994 0.156375 0.157712C0.364875 -0.0525706 0.702921 -0.0525706 0.911421 0.157712L4.34362 3.61925C4.36969 3.64553 4.39249 3.67386 4.41204 3.70372C4.54887 3.91272 4.52606 4.19675 4.34362 4.38075L0.911421 7.84229C0.702921 8.05257 0.364875 8.05257 0.156375 7.84229C-0.0521251 7.63201 -0.0521251 7.29107 0.156375 7.08079L3.21106 4L0.156375 0.919211Z" fill="#1C1E27"/>
+                </svg>
+                `,
+                next: `<svg xmlns="http://www.w3.org/2000/svg" width="5" height="8" viewBox="0 0 5 8" fill="none">
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M0.656375 0.919211C0.447875 0.708929 0.447875 0.367994 0.656375 0.157712C0.864875 -0.0525706 1.20292 -0.0525706 1.41142 0.157712L4.84362 3.61925C4.86969 3.64553 4.89249 3.67386 4.91204 3.70372C5.04887 3.91272 5.02606 4.19675 4.84362 4.38075L1.41142 7.84229C1.20292 8.05257 0.864875 8.05257 0.656375 7.84229C0.447875 7.63201 0.447875 7.29107 0.656375 7.08079L3.71106 4L0.656375 0.919211Z" fill="#1C1E27"/>
+                </svg>`,
+                previous: `<svg xmlns="http://www.w3.org/2000/svg" width="5" height="8" viewBox="0 0 5 8" fill="none">
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M4.34362 0.919211C4.55213 0.708929 4.55213 0.367994 4.34362 0.157712C4.13512 -0.0525706 3.79708 -0.0525706 3.58858 0.157712L0.156375 3.61925C0.130313 3.64553 0.107508 3.67386 0.0879612 3.70372C-0.0488672 3.91272 -0.0260625 4.19675 0.156375 4.38075L3.58858 7.84229C3.79708 8.05257 4.13512 8.05257 4.34362 7.84229C4.55213 7.63201 4.55213 7.29107 4.34362 7.08079L1.28894 4L4.34362 0.919211Z" fill="#1C1E27"/>
+                </svg>`,
+            },
+        },
+        paging: true,
+        scrollX: true,
+        dom: '<"table-top" ><"table-search-box"><"overlay-spinner">t<"table-bottom" <"table-info" i> <"table-pagination-box" lp> >',
+        columns: columns,
+        columnDefs: [
+            {
+                defaultContent: "",
+                className: "each-cell",
+                targets: "_all",
+            },
+            table_metadata?.row_selector?.enabled
+                ? {
+                    className: "select-checkbox",
+                    targets: [0],
+                }
+                : {},
+            {
+                className: "table-extra-cell",
+                targets: [-1],
+            },
+        ],
+        select: table_metadata?.row_selector?.enabled
+            ? {
+                style: "multi",
+                selector: "td:first-child",
+            }
+            : false,
+        order: [],
+        processing: true,
+        serverSide: true,
+        ajax: function (data, callback) {
+                function flattenObject(obj, parentKey = "") {
+                    let result = {};
+
+                    for (let key in obj) {
+                        if (obj.hasOwnProperty(key)) {
+                            let fullKey = parentKey ? `${parentKey}[${key}]` : key;
+                            if (typeof obj[key] === "object") {
+                                Object.assign(result, flattenObject(obj[key], fullKey));
+                            } else {
+                                result[fullKey] = obj[key];
+                            }
+                        }
+                    }
+
+                    return result;
+                }
+                const flattenedObject = flattenObject(data);
+
+                dataTableApiQueries = flattenedObject;
+                dataTableApiQueries["view"] = "table"
+                dataTableApiQueries["action"] = "get_table_data"
+
+                fetch(`./?${new URLSearchParams(flattenedObject)}`, {
+                    method: "GET",
+                    headers: {
+                        'X-CSRFToken': "{{csrf_token|safe}}"
+                    },
+                })
+                    .then((response) => response.json())
+                    .then((responseData) => {
+                        
+                        const MOCK_RESPONSE_DATA = {
+                                            "draw": 1,
+                                            "recordsTotal": 27,
+                                            "recordsFiltered": 27,
+                                            "data": [
+                                                {
+                                                    "id": 10034,
+                                                    "name": "test",
+                                                    "address": "sdjmk",
+                                                    "contact_person": "Test",
+                                                    "phone": "+918383838383",
+                                                    "email": "testn2122192jkm33@zel.com",
+                                                    "accounts_customer_id": "838012",
+                                                    "mobile": null,
+                                                    "test_col": 20034,
+                                                    "join_datetime": null,
+                                                    "pk": 34,
+                                                    "row_actions": [
+                                                        {
+                                                            "name": "Edit",
+                                                            "key": "edit",
+                                                            "description": "Edit Customer",
+                                                            "type": "form",
+                                                            "roles": [
+                                                                "Product Owner"
+                                                            ]
+                                                        }
+                                                    ],
+                                                    "field_title": "test",
+                                                    "workflow_status": {
+                                                        "name": "activate",
+                                                        "from": "inactive",
+                                                        "to": "active",
+                                                        "display_name": "Activate",
+                                                        "description": "Activate the Patient",
+                                                        "is_form_based": true,
+                                                        "status_label": "Active",
+                                                        "status_color": null
+                                                    }
+                                                }
+                                            ]
+                                        } 
+                        // const testResult = mapData(responseData?.data , table_metadata?.columns);
+                        
+                        if(window_size === 'mobile'){
+                            const mappedCardData =  mapDataForResponsiveDevice(responseData, table_metadata)
+                            let cardContainer = $(".cards-container")
+                            cardContainer.empty()
+                        
+
+                            mappedCardData.map((cardData, index)=>{
+                                let cardInfo = cardData?.cardInfo
+                                cardContainer.append(`
+                                        <div class="card" data-bs-toggle="offcanvas" data-cardindex="${index}" data-bs-target="#offcanvasBottom">
+                                            ${cardData?.title && ` <span class="title">${cardData?.title}</span>`}
+                                            <div class="card-info-container">
+                                                ${Object.keys(cardInfo).length > 0 && Object.keys(cardInfo).map((key) => {
+                                                    let columnInfo = table_metadata?.columns?.filter(({name}) => name === key);
+                                                    return  `<div class="card-info">
+                                                                <div class="card-info-label">${columnInfo[0]?.display_name}:</div>
+                                                                <div class="card-info-value">${cardInfo[key]}</div>
+                                                            </div>`                                                    
+                                                        }).join('')}
+                                            </div>
+                                            ${cardData.status_label && `<div class="card-status" style="background-color:${cardData.status_color};"> ${cardData.status_label} </div>`}
+                                        </div>
+                                
+                                    `)
+                            })
+                            if(mappedCardData.length >  0){
+                                $('.card').on('click', function() {
+                                    let index = $(this).data('cardindex');
+                                    let cardData = mappedCardData[index];
+                                    handleCardClick(cardData);
+                                });
+                            }
+                        }
+                        else{
+                        let mappedData = responseData?.data.map((eachData) =>
+                            table_metadata?.row_selector?.enabled
+                                ? ["", ...Object.values({...eachData}), ""]
+                                : [...Object.values(eachData), ""]
+                        );
+                        }
+                
+                
+
+                        let newData = {
+                            // data: responseData?.data?.map((eachData, index) => {
+                            //     if((index === 1)){
+                            //         return {...eachData, filter: {
+                            //                 type: "datepicker",
+                            //                 config: {
+                            //                     options: {
+                            //                         opens: 'left',
+                            //                         "singleDatePicker": true,
+                            //                     }
+                            //                 }
+                            //             }}
+                            //     }
+
+                            //     if((index === 2)){
+                            //         return {...eachData, filter: {
+                            //                 type: "datepicker",
+                            //                 config: {
+                            //                     options: {
+                            //                         "showDropdowns": true,
+                            //                         "showWeekNumbers": true,
+                            //                         "timePicker": true,
+                            //                         "timePicker24Hour": true,
+                            //                         "startDate": "11/16/2023",
+                            //                         "endDate": "11/22/2023"
+                            //                     }
+                            //                 }
+                            //             }}
+                            //     }
+
+                            //     if(index === 4) {
+                            //         return  {...eachData, filter: {
+                            //             type: "dropdown",
+                            //             config: {
+                            //                 options: [{id: "id", label: "label"}]
+                            //             }
+                            //         }}
+                            //     } else {
+                            //         return  {...eachData, filter: {
+                            //             type: "dropdown",
+                            //             config: {
+                            //                 options: [{id: "id", label: "label"}]
+                            //             }
+                            //         }}
+                            //     }
+                            // }),
+                            data: responseData?.data,
+                            draw: data?.draw,
+                            recordsFiltered: responseData?.recordsTotal,
+                            recordsTotal: responseData?.recordsTotal
+                        };
+
+                        return callback(newData);
+                    });
+            },
+            
+        createdRow: function (row, data, dataIndex) {
+            $(row)
+                .find("td")
+                .each(function (index) {
+                    $(this).data("row-data", data);
+                    $(this).attr("data-frow-data", JSON.stringify(data));
+                });
+        },
+        initComplete: function () {
+            $(document).find(".custom-table-page-count").select2({minimumResultsForSearch: -1});
+            $(document).find(".custom-table-page-count").val('10');
+            $(document).find(".custom-table-page-count").trigger('change');
+
+            let totalColumns = this.api().columns().count();
+            let columnFilter = `<tr>
+                    ${Array(totalColumns).fill(0).map((_, i) =>{
+                        return(`<th  class="each-filter-cell" rowspan="1" colspan="1" aria-label=""></th>`)
+                    }).join("")}
+                </tr>`
+            
+            let isColumnFilterAvailable = table_metadata.columns.reduce(
+                (accumulator, currentValue) => (currentValue?.searchable && currentValue?.type === 'string' && currentValue?.choices?.length) || (currentValue?.searchable && currentValue?.type === 'datetime') || (currentValue?.searchable && currentValue?.type === 'date') ? true : false || accumulator, false,
+            );
+            
+            // if(isColumnFilterAvailable){
+            //     $(".dataTables_scrollHead table.stripe.hover.order-column.dataTable.no-footer thead").append(columnFilter);
+            // }
+
+            let isRowSelectEnable = table_metadata?.row_selector?.enabled;
+            let filterIndex = isRowSelectEnable ? 1 : 0; 
+            this.api().columns().every(function (colIdx) {
+                if (isRowSelectEnable ? colIdx !== 0 && colIdx !== (totalColumns - 1) : colIdx !== (totalColumns - 1)) {
+                    let column = this;
+                    if(table_metadata?.columns[colIdx - filterIndex]?.searchable && table_metadata?.columns[colIdx - filterIndex]?.type === "string" && table_metadata?.columns[colIdx - filterIndex]?.choices?.length){
+                        // let select = $('<select><option value="">Select</option></select>')
+                        //     .appendTo($("thead tr:eq(1) .each-filter-cell").eq(colIdx).empty())
+                        //     .on('change', function () {
+                        //             if ( column.search() !== $(this).val() ) {
+                        //                 column
+                        //                     .search( $(this).val() )
+                        //                     .draw();
+                        //             }
+                        //         });
+
+                        // table_metadata?.columns[colIdx - filterIndex]?.choices?.map(({id, label}) => {
+                        //     select.append(`<option value="${id}">${label}</option>`);
+                        // })
+                        
+                        // select.select2({
+                        //     placeholder: "Select",
+                        //     width: 'resolve',
+                        //     dropdownAutoWidth : true,
+                        //     allowClear: true,
+                        //     // closeOnSelect: true
+                        // })
+
+                        let filterButton = $(`<div class="column-filter-box popper-box-${colIdx} ">
+                                <div class="column-filter-label popper-label-${colIdx}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                        <path d="M9.2545 7.97654C9.2545 7.77676 9.34794 7.48628 9.46539 7.32618L12.9732 2.54006C13.0893 2.37995 13.0333 2.25102 12.8437 2.25102H3.95702C3.76882 2.25102 3.71009 2.37853 3.82754 2.54006L7.33535 7.32618C7.45147 7.48487 7.54624 7.77533 7.54624 7.97654V13.4953C7.54624 13.6951 7.68638 13.7986 7.8639 13.7235L8.93702 13.2672C9.11321 13.1936 9.25469 12.9739 9.25469 12.7699L9.2545 7.97654ZM10.6213 12.7699C10.6213 13.5676 10.1381 14.32 9.44537 14.6147L8.37092 15.0709C7.29381 15.5271 6.17928 14.7209 6.17928 13.4953V8.11107L2.74904 3.42978C1.93619 2.32036 2.62624 0.800049 3.95699 0.800049H12.8437C14.1824 0.800049 14.8591 2.32743 14.0516 3.42978L10.6214 8.11107L10.6213 12.7699Z" fill="#6C747D"/>
+                                    </svg>
+                                </div>
+                                <div class="column-filter-content popper-content-${colIdx}">
+                                    <div class="column-filter-inner-content popper-inner-content-${colIdx} complete-hidden-scroll-style">
+                                        asd asd asd asd asd
+                                    </div>
+                                </div>
+                            </div>`).appendTo($("thead tr:eq(0) .each-cell").eq(colIdx));
+                            
+                        let select2 = $(`<select id="column-filter-select-${colIdx}" class="column-filter-select"><option value="">Select</option></select>`)
+                        .on('change', function () {
+                            if($(this).val()){
+                                $(document).find(`.popper-label-${colIdx}`).html(`<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                    <path d="M9.2545 7.97654C9.2545 7.77676 9.34794 7.48628 9.46539 7.32618L12.9732 2.54006C13.0893 2.37995 13.0333 2.25102 12.8437 2.25102H3.95702C3.76882 2.25102 3.71009 2.37853 3.82754 2.54006L7.33535 7.32618C7.45147 7.48487 7.54624 7.77533 7.54624 7.97654V13.4953C7.54624 13.6951 7.68638 13.7986 7.8639 13.7235L8.93702 13.2672C9.11321 13.1936 9.25469 12.9739 9.25469 12.7699L9.2545 7.97654ZM10.6213 12.7699C10.6213 13.5676 10.1381 14.32 9.44537 14.6147L8.37092 15.0709C7.29381 15.5271 6.17928 14.7209 6.17928 13.4953V8.11107L2.74904 3.42978C1.93619 2.32036 2.62624 0.800049 3.95699 0.800049H12.8437C14.1824 0.800049 14.8591 2.32743 14.0516 3.42978L10.6214 8.11107L10.6213 12.7699Z" fill="${crudCssVariables["--primary-color"]}"/>
+                                </svg>`);
+                            } else {
+                                $(document).find(`.popper-label-${colIdx}`).html(`<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                    <path d="M9.2545 7.97654C9.2545 7.77676 9.34794 7.48628 9.46539 7.32618L12.9732 2.54006C13.0893 2.37995 13.0333 2.25102 12.8437 2.25102H3.95702C3.76882 2.25102 3.71009 2.37853 3.82754 2.54006L7.33535 7.32618C7.45147 7.48487 7.54624 7.77533 7.54624 7.97654V13.4953C7.54624 13.6951 7.68638 13.7986 7.8639 13.7235L8.93702 13.2672C9.11321 13.1936 9.25469 12.9739 9.25469 12.7699L9.2545 7.97654ZM10.6213 12.7699C10.6213 13.5676 10.1381 14.32 9.44537 14.6147L8.37092 15.0709C7.29381 15.5271 6.17928 14.7209 6.17928 13.4953V8.11107L2.74904 3.42978C1.93619 2.32036 2.62624 0.800049 3.95699 0.800049H12.8437C14.1824 0.800049 14.8591 2.32743 14.0516 3.42978L10.6214 8.11107L10.6213 12.7699Z" fill="#6C747D"/>
+                                </svg>`)
+                            }
+                            if ( column.search() !== $(this).val() ) {
+                                column
+                                .search( $(this).val() )
+                                .draw();
+                            }
+                        }).on('select2:close', function (e)
+                        {
+                            $(this).select2({
+                                placeholder: "Select",
+                                width: '100%',
+                                dropdownAutoWidth : true,
+                                allowClear: true
+                            })
+                        });;
+                        
+                        $(document).find(`.popper-inner-content-${colIdx}`).html(select2);
+                        
+                        table_metadata?.columns[colIdx - filterIndex]?.choices?.map(({id, label}) => {
+                            select2.append(`<option value="${id}">${label}</option>`);
+                        })
+                        
+                        select2.select2({
+                            placeholder: "Select",
+                            width: 'resolve',
+                            dropdownAutoWidth : true,
+                            allowClear: true,
+                            // closeOnSelect: true
+                        })
+                    }
+
+                    if(table_metadata?.columns[colIdx - filterIndex]?.searchable && (table_metadata?.columns[colIdx - filterIndex]?.type === "date" || table_metadata?.columns[colIdx - filterIndex]?.type === "datetime")){
+                        let datepicker = $(`
+                            <div id="datepicker-${colIdx}" class="table-date-range-picker" data-colIdx=${colIdx}>
+                                <span class="date-range-label date-range-placeholder">Select</span>
+                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <g id="Icon/Action/16px/Calendar">
+                                    <path id="Vector" d="M16.3187 2.709H14.8597V1.73606C14.8597 1.46762 14.6421 1.25 14.3737 1.25C14.1052 1.25 13.8876 1.46762 13.8876 1.73606V2.709H6.11065V1.73606C6.11065 1.46762 5.89304 1.25 5.6246 1.25C5.35615 1.25 5.13854 1.46762 5.13854 1.73606V2.709H3.68118C2.34128 2.709 1.25 3.79939 1.25 5.14018V16.3203C1.25 17.6602 2.34039 18.7515 3.68118 18.7515H16.3188C17.6587 18.7515 18.75 17.6611 18.75 16.3203L18.7492 7.56969V5.13852C18.7484 3.79862 17.6579 2.709 16.3187 2.709ZM17.7761 16.3187C17.7761 17.1223 17.1223 17.776 16.3187 17.776H3.68107C2.87584 17.776 2.22208 17.1223 2.22208 16.3187V7.56949H17.776L17.7761 16.3187ZM17.7761 6.59747H2.22218V5.13847C2.22218 4.33405 2.87592 3.67948 3.68118 3.67948H5.14017V3.6811H6.11068H13.8876V3.68271H14.8597V3.6811H16.3187C17.1224 3.6811 17.7761 4.33403 17.7761 5.13845L17.7761 6.59747Z" fill="#A3ABB1" stroke="#A3ABB1" stroke-width="0.2"/>
+                                    </g>
+                                </svg>
+                            </div>`) 
+                            // .appendTo($("thead tr:eq(1) .each-filter-cell").eq(colIdx).empty())
+                        
+                        let filterButton = $(`<div class="column-filter-box popper-box-${colIdx} ">
+                            <div class="column-filter-label popper-label-${colIdx}">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                    <path d="M9.2545 7.97654C9.2545 7.77676 9.34794 7.48628 9.46539 7.32618L12.9732 2.54006C13.0893 2.37995 13.0333 2.25102 12.8437 2.25102H3.95702C3.76882 2.25102 3.71009 2.37853 3.82754 2.54006L7.33535 7.32618C7.45147 7.48487 7.54624 7.77533 7.54624 7.97654V13.4953C7.54624 13.6951 7.68638 13.7986 7.8639 13.7235L8.93702 13.2672C9.11321 13.1936 9.25469 12.9739 9.25469 12.7699L9.2545 7.97654ZM10.6213 12.7699C10.6213 13.5676 10.1381 14.32 9.44537 14.6147L8.37092 15.0709C7.29381 15.5271 6.17928 14.7209 6.17928 13.4953V8.11107L2.74904 3.42978C1.93619 2.32036 2.62624 0.800049 3.95699 0.800049H12.8437C14.1824 0.800049 14.8591 2.32743 14.0516 3.42978L10.6214 8.11107L10.6213 12.7699Z" fill="#6C747D"/>
+                                </svg>
+                            </div>
+                            <div class="column-filter-content popper-content-${colIdx}">
+                                <div class="column-filter-inner-content popper-inner-content-${colIdx} complete-hidden-scroll-style">
+                                    asd asd asd asd asd
+                                </div>
+                            </div>
+                        </div>`).appendTo($("thead tr:eq(0) .each-cell").eq(colIdx));
+                        
+                        $(document).find(`.popper-inner-content-${colIdx}`).html(datepicker);
+                        
+                        // $(document).find(`.popper-inner-content-${colIdx}`).html(datepicker);
+                    }
+                }
+            });
+
+            zelthyTable.columns.adjust().draw();
+            
+
+            $("th.select-checkbox.each-cell:first-child").html(
+                `<button id="table_select_all_row" type="button" class="table_select_all_row"></button>`
+            );
+            $(".table_select_all_row").on("click", function () {
+                if ($(this).hasClass("all_row_selected")) {
+                    $(this).removeClass("all_row_selected");
+                    zelthyTable.rows().deselect();
+                } else {
+                    $(this).addClass("all_row_selected");
+                    zelthyTable.rows().select();
+                }
+            });
+
+            zelthyTable.on("select deselect", function (e, dt, type, indexes) {
+                if (type === "row") {
+                    let data = zelthyTable
+                        .rows({ selected: true })
+                        .data()
+                        .pluck("pk");
+                    let count = zelthyTable.rows({ selected: true }).count();
+                    if (count > 0) {
+                        $(".table-action").css({ display: "flex" });
+                    } else {
+                        $(".table-action").hide();
+                    }
+                }
+            });
+            $(".table-search-box").html(`
+                <div class="table-search-input-box">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                        <g clip-path="url(#clip0_2358_618)">
+                        <path d="M13.9647 13.0221C15.0263 11.7505 15.6646 10.1148 15.6646 8.33314C15.6646 4.28923 12.375 1 8.33388 1C4.28957 1 1 4.28923 1 8.33314C1 12.3762 4.28957 15.6663 8.33388 15.6663C10.1158 15.6663 11.7516 15.0265 13.0233 13.9666L17.8612 18.8039C17.9909 18.9336 18.1612 19 18.333 19C18.5033 19 18.6752 18.9344 18.8049 18.8039C19.065 18.5438 19.065 18.122 18.8049 17.8619L13.9647 13.0221ZM8.33388 14.3321C5.02631 14.3321 2.33431 11.6403 2.33431 8.3331C2.33431 5.02587 5.02631 2.33413 8.33388 2.33413C11.6414 2.33413 14.3335 5.02587 14.3335 8.3331C14.3335 11.6403 11.6414 14.3321 8.33388 14.3321Z" fill="black" stroke="black" stroke-width="0.2"/>
+                        </g>
+                        <defs>
+                        <clipPath id="clip0_2358_618">
+                        <rect width="20" height="20" fill="white"/>
+                        </clipPath>
+                        </defs>
+                    </svg>
+                
+                    <input id='table_search' type="text" placeholder="${window_size === 'mobile'  ? 'Search': 'Search by ' +searchable.map(eachSeachable => eachSeachable.toLowerCase()).join(
+                        ", "
+                    ) }"/>
+                </div>
+                {% if has_export_perm %}
+                    <div class="table-static-action">
+                        <button type="button" class="download-button">
+                            <span>Download</span>
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M18.408 12.9034C18.7349 12.9034 19 13.1658 19 13.4895V15.6002C19 17.4776 17.4623 19 15.566 19H4.43404C2.53774 19 1 17.4776 1 15.6002V13.4895C1 13.1658 1.26509 12.9034 1.59204 12.9034C1.91899 12.9034 2.18408 13.1658 2.18408 13.4895V15.6002C2.18408 16.8302 3.19166 17.8278 4.43408 17.8278H15.566C16.8084 17.8278 17.816 16.8302 17.816 15.6002V13.4895C17.816 13.1658 18.081 12.9034 18.408 12.9034ZM9.99998 2.00008C10.3136 2.00008 10.5709 2.24164 10.5906 2.54723L10.592 2.58621V12.2574L13.1485 9.89548C13.3771 9.68386 13.73 9.68664 13.9557 9.89409L13.9853 9.92402C14.199 10.1503 14.1962 10.4997 13.9867 10.7232L13.9564 10.7524L10.4077 14.0317C10.3965 14.0422 10.3859 14.0512 10.3747 14.061C10.3712 14.0631 10.3684 14.0658 10.3656 14.0679C10.3585 14.0735 10.3508 14.0791 10.3438 14.0839C10.3388 14.0874 10.3339 14.0909 10.3283 14.0944C10.3234 14.0979 10.3184 14.1013 10.3128 14.1041C10.3079 14.1076 10.303 14.1104 10.2973 14.1139C10.2896 14.1181 10.2819 14.1222 10.2734 14.1264L10.2643 14.1313C10.2573 14.1348 10.2495 14.1382 10.2425 14.1417C10.2369 14.1438 10.232 14.1459 10.227 14.148C10.22 14.1508 10.2137 14.1536 10.2073 14.1563L10.1898 14.1619C10.1848 14.164 10.1799 14.1654 10.1743 14.1668C10.1673 14.1689 10.1602 14.171 10.1525 14.173C10.1335 14.1786 10.1131 14.1828 10.0934 14.1856C10.0885 14.1863 10.0829 14.187 10.078 14.1877L10.0386 14.1918L9.99993 14.1925C9.9697 14.1925 9.93946 14.1904 9.90923 14.1863L9.88181 14.1814C9.7004 14.2176 9.50492 14.1696 9.35939 14.0352L5.80655 10.7523C5.56749 10.5316 5.55484 10.1606 5.77772 9.92395C6.00062 9.68727 6.37538 9.67474 6.61443 9.89541L9.40803 12.4765V2.58614C9.40803 2.26244 9.67303 2.00008 9.99998 2.00008Z" fill="black" stroke="black" stroke-width="0.3"/>
+                            </svg>
+                        </button>
+                        <div class="download-confirm-dialog" id="downloadDialog">
+                            <div class="download-confirm-dialog-outer">
+                                <div class="download-confirm-dialog-messages">
+                                    <p>
+                                        The report will be available in <strong>‘My Downloads’</strong> in <strong>30 min</strong>.
+                                    </p>
+                                    <p>
+                                        Confirm if you want to proceed with download?
+                                    </p>
+                                </div> 
+                                <button type="button" class="download-confirm-dialog-button">
+                                    Download
+                                </button>   
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+                <div class="table-action">
+                    ${table_metadata?.actions?.table
+                    ?.map(({ name, key, icon }) => {
+                        return `<button type="button" class="each-table-action-button" data-key="${key}">
+                                        ${name
+                                ? `<span>${name}</span>`
+                                : ""
+                            } 
+                                        ${icon
+                                ? `<img src="${icon}" alt="${name} icon"/>`
+                                : ""
+                            }
+                                    </button>`;
+                    })
+                    .join("")}
+                </div>
+            `);
+
+
+            $(document).find(".download-confirm-dialog-button").on("click", function(){
+                document.getElementById('downloadDialog').style.display = 'block';
+                delete dataTableApiQueries['draw'];
+                dataTableApiQueries['view'] = "table";
+                dataTableApiQueries['action'] = "export_table";
+                
+                fetch(`./?${new URLSearchParams(dataTableApiQueries)}`, {
+                    method: "GET",
+                    headers: {
+                        'X-CSRFToken': "{{csrf_token|safe}}"
+                    },
+                })
+                    .then((response) => response.json())
+                    .then((responseData) => {
+                        if(responseData?.success){
+                            ZToast("success", "Download Confirmation", responseData?.response?.message, 3000);
+                            document.getElementById('downloadDialog').style.display = 'none';
+                        } else {
+                            ZToast("error", "Error", responseData?.response?.message, 3000);
+                        }
+                    })
+                    .catch(error => {
+                        ZToast("error", "Server Error", responseData?.response?.message, 3000);
+                        throw(error);
+                    });
+
+            });
+
+            $(document)
+                .find(".each-table-action-button")
+                .on("click", function () {
+                    let buttonKey = $(this).attr("data-key");
+                    let data = zelthyTable
+                        .rows({ selected: true })
+                        .data()
+                        .pluck("pk");
+                    let count = zelthyTable.rows({ selected: true }).count();
+                    let allSelectedIds = Array(count)
+                        .fill(0)
+                        .map((_, i) => data[i]);
+                });
+
+            function debounce(func, timeout = 300) {
+                    let timer;
+                    return (...args) => {
+                        clearTimeout(timer);
+                        timer = setTimeout(() => { func.apply(this, args); }, timeout);
+                    };
+                }
+
+            function searchInTable(value) {                        
+                zelthyTable.search(value).draw()
+            }
+            const searchFieldChange = debounce((value) => searchInTable(value), 500);
+
+            $(document)
+                .find("#table_search")
+                .on("change keyup paste", function () {
+                    let searchValue = $(this).val();
+                    searchFieldChange(searchValue);
+                });
+
+            new $.fn.dataTable.FixedHeader(zelthyTable, {
+                headerOffset: $(".table-search-box").outerHeight(),
+                header: true,
+                footer: false,
+            });
+
+            function resizePaginationInputWidth() {
+                let value = $(document).find(".paginate_input").val();
+                if (value) {
+                    $(document)
+                        .find(".paginate_input")
+                        .css({ width: `${value.length + 5}ch` });
+                }
+            }
+
+            resizePaginationInputWidth();
+
+            $(document)
+                .find(".paginate_input")
+                .on("change keypress", function () {
+                    resizePaginationInputWidth();
+                });
+            
+            $(".row-action-simple-dialog-form").on("submit", function(){
+                event.preventDefault();
+
+                let rowData = $(this).data("rowData");
+                let optionKey = $(this).data("optionKey");
+                
+                let formData = new FormData();
+                formData.append("pk", rowData?.pk);
+
+                async function simpleRowAction(formData) {
+                    try {
+                        const response = await fetch(`./?action_type=row&action_key=${optionKey}`, {
+                        method: "POST",
+                        headers: {
+                            'X-CSRFToken': "{{csrf_token|safe}}"
+                        },
+                        body: formData,
+                        });
+                        const result = await response.json();
+                        if (result.success) {
+                            $(this).data("optionKey", "");
+                            $(".row-action-simple-dialog-overlay").css({"display":"none"});
+                            zelthyTable.draw();
+                        } else {    
+                            if (result.response.message){
+                                alert(result.response.message);
+                            } else {
+                                alert("An error occurred.");
+                            }
+                            $(".row-action-simple-dialog-overlay").css({"display":"none"});
+                            zelthyTable.draw();
+                        }
+                    } catch (error) {
+                        console.error("Error:", error);
+                        $(".row-action-simple-dialog-overlay").css({"display":"none"});
+                        zelthyTable.draw();
+                    }
+                }
+
+                simpleRowAction(formData);
+            });
+
+            $(".row-action-simple-dialog-form").find(".close-button").on("click", function(){
+                $(this).data("optionKey", "");
+                $(".row-action-simple-dialog-overlay").css({"display":"none"});
+            });
+        
+            attachTableDrawEvents();
+            // for handling 70 char condition and custom sort icons
+            $("th.each-cell").each((index, cell) => {
+                if($(cell).children().length === 0){
+                    // if column header has more than 70 char then break the line
+                    let cellData = $(cell).html()
+                    let cellDataLength = cellData?.length
+                    if(cellData && cellDataLength > 70){
+                        $(cell).css("white-space","break-spaces") 
+                    } 
+                }
+                if($(cell).hasClass('sorting')){
+                    
+                    $(cell).append(`<div class="asc_desc_sort_wrapper">
+                                        <div id="asc_sort">
+                                            <svg id="asc_sort_deactive" xmlns="http://www.w3.org/2000/svg" width="8" height="7" viewBox="0 0 8 7" fill="currentColor">
+                                                <path d="M0.635294 6.22853H7.3776C7.60357 6.22853 7.80305 6.10905 7.89604 5.90957C7.98902 5.7101 7.97604 5.47061 7.84305 5.29762L4.45188 0.896015C4.23889 0.61653 3.74695 0.61653 3.53449 0.896015L0.169781 5.29762C0.0367943 5.47061 0.0103031 5.71009 0.116794 5.90957C0.209781 6.10905 0.409259 6.22853 0.63523 6.22853H0.635294ZM4 2.19889L6.19428 5.07167H1.80571L4 2.19889Z" fill="currentColor"/>
+                                            </svg>
+                                            <svg id="asc_sort_active" style="display: none;" xmlns="http://www.w3.org/2000/svg" width="8" height="7" viewBox="0 0 8 7" fill="none">
+                                                <path d="M0.635294 6.22841H7.3776C7.60357 6.22841 7.80305 6.10893 7.89604 5.90945C7.98902 5.70997 7.97604 5.47049 7.84305 5.2975L4.45188 0.895893C4.23889 0.616408 3.74695 0.616408 3.53449 0.895893L0.169781 5.2975C0.0367943 5.47049 0.0103031 5.70997 0.116794 5.90945C0.209781 6.10893 0.409323 6.22841 0.635294 6.22841Z" fill="#6C747D"/>
+                                            </svg>
+                                        </div>
+                                        <div id="desc_sort">
+
+                                            <svg id="desc_sort_deactive" xmlns="http://www.w3.org/2000/svg" width="8" height="7" viewBox="0 0 8 7" fill="currentColor">
+                                                <path d="M7.36479 0.757812H0.635378C0.409406 0.757812 0.209926 0.877293 0.116942 1.07677C0.0239571 1.27624 0.0369419 1.51573 0.169929 1.68872L3.53463 6.09086C3.64113 6.23735 3.81412 6.31683 3.98658 6.31683C4.15957 6.31683 4.33256 6.23683 4.43852 6.09086L7.80322 1.68872C7.93621 1.51573 7.9627 1.27625 7.85621 1.07677C7.79024 0.890799 7.59075 0.757812 7.36478 0.757812H7.36479ZM4.00008 4.78745L1.8058 1.91467H6.20793L4.00008 4.78745Z" fill="currentColor"/>
+                                            </svg>
+                                            <svg id="desc_sort_active" style="display: none;" xmlns="http://www.w3.org/2000/svg" width="8" height="7" viewBox="0 0 8 7" fill="none">
+                                                <path d="M7.36466 0.757812H0.635256C0.409284 0.757812 0.209804 0.877293 0.11682 1.07677C0.023835 1.27624 0.0368198 1.51573 0.169807 1.68872L3.53451 6.09085C3.641 6.23735 3.814 6.31683 3.98645 6.31683C4.15944 6.31683 4.33243 6.23683 4.4384 6.09085L7.8031 1.68872C7.93609 1.51573 7.96258 1.27625 7.85609 1.07677C7.79011 0.890799 7.59064 0.757812 7.36466 0.757812Z" fill="#6C747D"/>
+                                            </svg>
+                                        </div>
+                                    </div>`)
+                }
+            })
+        },
+    });
+
+    zelthyTable.on( 'draw.dt', function () {
+            $("th.each-cell").each((index, cell) => {
+                if($(cell).hasClass('sorting_asc')) {
+                    $(cell).children('div').children("div").children('#asc_sort_active').css('display', 'block') 
+                    $(cell).children('div').children("div").children('#asc_sort_deactive').css('display', 'none') 
+                }
+                else{    
+                    $(cell).children('div').children("div").children('#asc_sort_active').css('display', 'none') 
+                    $(cell).children('div').children("div").children('#asc_sort_deactive').css('display', 'block') 
+                } 
+                if($(cell).hasClass('sorting_desc')) {
+                    $(cell).children('div').children("div").children('#desc_sort_active').css('display', 'block') 
+                    $(cell).children('div').children("div").children('#desc_sort_deactive').css('display', 'none') 
+                }
+                else{    
+                    $(cell).children('div').children("div").children('#desc_sort_active').css('display', 'none') 
+                    $(cell).children('div').children("div").children('#desc_sort_deactive').css('display', 'block') 
+                } 
+                    
+                
+            }) 
+            attachTableDrawEvents();
+            
+        } );
+
+</script>
+
+<script>
+    let addConfig = {
+        "form-type": "add-patient",
+        "get-url":  `./?action=initialize_form`,
+        "post-url": `./?form_type=create_form`,
+    }
+    function handleCardClick(data) {
+        const ignore_meta_details = ["cardInfo", "title", "status_label", "status_color"];
+        $(".details-offcanvas-body").html(`
+       ${data.title && `<h5 class="detail-title">${data?.title}</h5>`}
+    
+        ${data.status_label && `<span class="detail-status" style="background-color:${data.status_color};">${data.status_label}</span>`}
+        ${Object.keys(data).map((detail_key,index)=>{
+            if(!ignore_meta_details.includes(detail_key) && data[detail_key]){
+            return `
+            <div class="general-details">
+                <div class="detail-label">${detail_key}</div>
+                <div class="detail-value">${data[detail_key]}</div>
+            </div>
+        `}
+        }).join('')}
+
+        `);
+    }
+    var inputElements = document.getElementsByName('csrfmiddlewaretoken');
+    let tableCardContainer= $(".dataTables_scroll")
+    tableCardContainer.append(` <div class="cards-container">`)
+    $(document).find(".page-add-button").on("click", function(){
+        $("#page_add_modal #zelthy-dynamic-form").attr("data-config", JSON.stringify({
+            "get_data":{
+                "is_api_based":true,
+                "url":"./?action=initialize_form",
+                "static_config":{},
+            },
+            "post_data":{
+                "http_method":"POST",
+                "url":"./?form_type=create_form",
+                "payload_type":"FORMDATA"
+            }
+        }));
+
+        let modalId = $(this).data("modal");
+        if($(`#${modalId}`).is(":hidden")){
+            $(`#${modalId}`).css({"display":"flex"});
+        } else {
+            $(`#${modalId}`).css({"display":"none"});
+        }
+    });
+
+    $(document).find(".modal-close").on("click", function(){
+        let modalId = $(this).data("modal");
+        $(`#${modalId}`).css({"display":"none"});
+        if(modalId === "row_actions_form_modal"){
+            location.reload();
+        }
+    })
+
+    $(document).find('#objectcreateform').find("select").select2({
+        placeholder: "Select"
+    });
+
+    $("#objectcreateform").submit(function(event) {
+        // Prevent the form from submitting the traditional way
+        event.preventDefault();
+        $(document).find(".overlay-spinner").show();
+        $(this).find("button[type='submit']").attr("disabled", true);
+        // Get the form data
+        let formData = new FormData($(this)[0]);
+
+        // Submit the form via AJAX
+        $.ajax({
+            type: "POST",
+            url: $(this).attr('action'), // Use the form's action attribute as the AJAX endpoint
+            data: formData,
+            dataType: "json",
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                if (response.success) {
+                    alert(response.msg); // Optional: Show a success message
+                    location.reload();  // Reload the page
+                } else {
+                    alert("An error occurred.");
+                }
+                $(document).find(".overlay-spinner").hide();
+                $(this).find("button[type='submit']").attr("disabled", false);
+        
+            },
+            error: function() {
+                alert("Failed to submit the form.");
+                $(document).find(".overlay-spinner").hide();
+                $(this).find("button[type='submit']").attr("disabled", false);
+            }
+        });
+    });
+    
+</script>
+
+{% block load_zform_lib %}
+ <script src="{% zstatic 'packages/crud/js/zfrom_lib.v1.0.38.min.js' %}"></script>
+
+{% endblock %}
+
+
+<!-- TODO: Handle -->
+{% block custom_js_after_base_script %} {% endblock %}
+
+
+{% endblock %}
+
+

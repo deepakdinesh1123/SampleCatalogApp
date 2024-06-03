@@ -1,0 +1,16 @@
+{
+    "policies": [
+        {
+            "name": "LoginViewAccess",
+            "description": "Policy for accessing the Login View",
+            "statement": {
+                "permissions": [
+                    {
+                        "name": "packages.login.appauth.views.AppUserLoginView",
+                        "type": "view"
+                    }
+                ]
+            }
+        }
+    ]
+}

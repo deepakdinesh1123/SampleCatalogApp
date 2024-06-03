@@ -1,0 +1,185 @@
+{
+  "json_schema": {
+    "title": "Configure Login Package",
+    "type": "object",
+    "properties": {
+      "header_text": {
+        "title": "Header Text",
+        "type": "string"
+      },
+      "paragraph_text": {
+        "title": "Paragraph Text",
+        "type": "string"
+      },
+      "paragraph_text_color": {
+        "title": "Paragraph Text Color",
+        "type": "string",
+        "default": "#FFFFFF"
+      },
+      "background_color": {
+        "title": "Background Color",
+        "type": "string"
+      },
+      "background_image": {
+        "title": "Background Image",
+        "type": "string"
+      },
+      "card_title": {
+        "title": "Card Title",
+        "type": "string"
+      },
+      "card_color": {
+        "title": "Card Color",
+        "type": "string",
+        "default": "#FFFFFF"
+      },
+      "card_text_color": {
+        "title": "Card Text Color",
+        "type": "string",
+        "default": "#6c747d"
+      },
+      "corner_radius": {
+        "title": "Corner Radiusr",
+        "type": "number",
+        "default": 4
+      },
+      "logo": {
+        "title": "Logo (JPEG/PNG/SVG)",
+        "type": "string"
+      },
+      "logo_placement": {
+        "title": "Logo Placement",
+        "type": "string",
+        "default": "topLeft",
+        "enumNames": ["Top Left", "Inside Login Card"],
+        "enum": ["topLeft", "insideLoginCard"]
+      },
+      "user_role_configs": {
+        "type": "array",
+        "title": "Routing",
+        "items": {
+          "type": "object",
+          "properties": {
+            "user_role": {
+              "title": "User Role",
+              "type": "string",
+              "uniqueItems": true,
+              "enum": [],
+              "enumNames": []
+            },
+            "url": {
+              "type": "string",
+              "title": "URL"
+            }
+          }
+        }
+      }
+    }
+  },
+  "ui_schema": {
+    "header_text": {
+      "ui:placeholder": "Enter",
+      "ui:syncEnabled": false,
+      "ui:autocomplete": {},
+      "ui:errorMessages": {},
+      "ui:widget": "TextFieldWidget"
+    },
+    "paragraph_text": {
+      "ui:placeholder": "Enter",
+      "ui:syncEnabled": false,
+      "ui:autocomplete": {},
+      "ui:errorMessages": {},
+      "ui:widget": "TextareaFieldWidget"
+    },
+    "background_color": {
+      "ui:placeholder": "Enter",
+      "ui:syncEnabled": false,
+      "ui:autocomplete": {},
+      "ui:errorMessages": {},
+      "ui:widget": "ColorWidget"
+    },
+    "paragraph_text_color": {
+      "ui:placeholder": "Enter",
+      "ui:syncEnabled": false,
+      "ui:autocomplete": {},
+      "ui:errorMessages": {},
+      "ui:widget": "ColorWidget"
+    },
+    "background_image": {
+      "ui:placeholder": "",
+      "ui:errorMessages": {
+        "required": "This field is required."
+      },
+      "ui:widget": "FileFieldWidget",
+      "ui:format": "data-url"
+    },
+    "card_title": {
+      "ui:placeholder": "Enter title",
+      "ui:errorMessages": {
+        "required": "This field is required."
+      },
+      "ui:widget": "TextFieldWidget"
+    },
+    "card_color": {
+      "ui:placeholder": "Enter",
+      "ui:syncEnabled": false,
+      "ui:autocomplete": {},
+      "ui:errorMessages": {},
+      "ui:widget": "ColorWidget"
+    },
+    "card_text_color": {
+      "ui:placeholder": "Enter",
+      "ui:syncEnabled": false,
+      "ui:autocomplete": {},
+      "ui:errorMessages": {},
+      "ui:widget": "ColorWidget"
+    },
+    "corner_radius": {
+      "ui:placeholder": "Enter",
+      "ui:errorMessages": {
+        "required": "This field is required."
+      },
+      "ui:widget": "CustomInputFieldWidget",
+      "ui:options": {
+        "rightSideIcon": "<svg width='22' height='22' viewBox='0 0 22 22' fill='none' xmlns='http://www.w3.org/2000/svg'><path d='M18 5H15C9.47715 5 5 9.47715 5 15V18' stroke='#A3ABB1' stroke-width='1.5' stroke-linecap='round' /></svg>",
+        "rightSideText": "px"
+      }
+    },
+    "logo": {
+      "ui:placeholder": "Click to Upload",
+      "ui:errorMessages": {
+        "required": "This field is required."
+      },
+      "ui:widget": "FileFieldWidget",
+      "ui:format": "data-url"
+    },
+    "logo_placement": {
+      "ui:widget": "RadioFieldWidget",
+      "ui:errorMessages": {
+        "required": "This field is required."
+      }
+    },
+    "user_role_configs": {
+      "items": {
+        "user_role": {
+          "ui:placeholder": "Select user role",
+          "ui:errorMessages": {
+            "required": "This field is required."
+          },
+          "ui:widget": "select"
+        },
+        "url": {
+          "ui:placeholder": "Enter URL",
+          "ui:errorMessages": {
+            "required": "This field is required."
+          },
+          "ui:widget": "TextFieldWidget"
+        }
+      }
+    },
+    "ui:submitButtonOptions": {
+      "norender": false,
+      "submitText": "Update Details"
+    }
+  }
+}

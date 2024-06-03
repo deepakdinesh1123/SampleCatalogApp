@@ -1,0 +1,39 @@
+{
+    "version": "0.1.0",
+    "modules": [ 
+        {
+            "name": "router",
+            "path": "router"
+        },
+        {
+            "name": "configure",
+            "path": "configure"
+        },
+        {
+            "name": "downloads",
+            "path": "downloads"
+        }
+    ],
+    "app_routes": [
+        {
+            "re_path": "^router/",
+            "module": "router",
+            "url": "urls"
+        },
+        {
+            "re_path": "^configure/",
+            "module": "configure",
+            "url": "urls"
+        },
+        {
+            "re_path": "^downloads/",
+            "module": "downloads",
+            "url": "urls"
+        }
+        
+    ],
+    "package_routes": [],
+    "dependencies":[]    
+}
+
+

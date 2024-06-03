@@ -1,0 +1,33 @@
+{
+    "version": "1.0.0",
+    "modules": [
+        {
+            "name": "products",
+            "path": "products"
+        }
+    ],
+    "app_routes": [
+        {
+            "re_path": "^products/",
+            "module": "products",
+            "url": "urls"
+        }
+    ],
+    "package_routes": [
+        {
+            "re_path": "^crud/",
+            "package": "crud",
+            "url": "urls"
+        },
+        {
+            "re_path": "^frame/",
+            "package": "frame",
+            "url": "urls"
+        },
+        {
+            "re_path": "^login/",
+            "package": "login",
+            "url": "urls"
+        }
+    ]
+}

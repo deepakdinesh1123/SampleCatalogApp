@@ -1,0 +1,16 @@
+{
+    "policies": [
+        {
+            "name": "FrameRouterViewAccess",
+            "description": "Policy for accessing the FrameRouterView",
+            "statement": {
+                "permissions": [
+                    {
+                        "name": "packages.frame.router.views.FrameRouterView",
+                        "type": "view"
+                    }
+                ]
+            }
+        }
+    ]
+}

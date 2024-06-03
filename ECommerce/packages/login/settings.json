@@ -1,0 +1,27 @@
+{
+    "version": "1.0.0",
+    "modules": [ 
+        {
+            "name": "configure",
+            "path": "configure"
+        },
+        {
+            "name": "appauth",
+            "path": "appauth"
+        }
+    ],
+    "app_routes": [
+        {
+            "re_path": "^configure/",
+            "module": "configure",
+            "url": "urls"
+        },
+        {
+            "re_path": "^",
+            "module": "appauth",
+            "url": "urls"
+        }
+    ],
+    "package_routes": [],
+    "dependencies":[]    
+}

@@ -1,0 +1,20 @@
+{
+    "policies": [
+        {
+            "name": "ProductsViewAccess",
+            "description": "Policy to allow access to the Products view",
+            "statement": {
+                "permissions": [
+                    {
+                        "name": "products.views.ProductCrudView",
+                        "type": "view"
+                    },
+                    {
+                        "name": "products.views.EnquiryCrudView",
+                        "type": "view"
+                    }
+                ]
+            }
+        }
+    ]
+}

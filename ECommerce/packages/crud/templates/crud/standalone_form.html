@@ -1,0 +1,167 @@
+{% extends 'frame/_base.html' %}
+{% load crispy_forms_tags %}
+{% load zstatic %}
+
+{% block head %}
+<head>
+<title>{{page_title}}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+    href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&family=Source+Code+Pro:wght@400;600;700&display=swap"
+    rel="stylesheet" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-toast-plugin@1.3.2/dist/jquery.toast.min.css">
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery-toast-plugin@1.3.2/dist/jquery.toast.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+
+<link rel="stylesheet" href="{% zstatic 'packages/crud/css/style.css' %}">
+</head>
+{% endblock %}
+
+{% block page_content %}
+
+<form method="post">
+    {% csrf_token %}
+</form>
+<style>
+    /* Center the form */
+    .container {
+      max-width: 600px;
+      margin: auto;
+      height: 100%;
+    }
+
+    /* Responsive layout using Tailwind CSS breakpoints */
+    @media screen and (min-width: 640px) {
+      /* Small devices (sm): 640px and up */
+      .container {
+        max-width: 90%;
+        padding: 20px;
+      }
+    }
+
+    @media screen and (min-width: 768px) {
+      /* Medium devices (md): 768px and up */
+      .container {
+        max-width: 75%;
+        padding: 20px;
+      }
+    }
+
+    @media screen and (min-width: 1024px) {
+      /* Large devices (lg): 1024px and up */
+      .container {
+        max-width: 60%;
+        padding: 20px;
+      }
+    }
+</style>
+
+<div class="container">
+    <div class="zelthy-dynamic-form" style="height: 100%"> </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+      const config = {{frame_config|safe}};
+      const app_theme_config = {{app_theme_config|safe}};
+
+      let newAppThemeConfig = {
+          "color": {
+              "accent": app_theme_config?.color?.primary || config?.config?.color?.primary || "#DDE2E5",
+              "header": "#FFFFFF",
+              "primary": app_theme_config?.color?.primary || config?.config?.color?.primary ||  "#DDE2E5",
+              "sidebar": app_theme_config?.color?.secondary || config?.config?.color?.secondary || "#E1D6AE",
+              "secondary": app_theme_config?.color?.secondary || config?.config?.color?.secondary || "#E1D6AE",
+              "background": app_theme_config?.color?.background || config?.config?.color?.background || "#FFFFFF",
+              "typography": "#212429",
+              "headerBorder": "#DDE2E5"
+          }
+      }
+
+      let newAppConfig = {...config, "config": newAppThemeConfig };
+
+      const root = document.querySelector(':root');
+      const setCssVariables = vars => Object.entries(vars).forEach(v => root.style.setProperty(v[0], v[1]));
+      const crudCssVariables = {
+          "--primary-color": tinycolor
+                      .mix(
+                        tinycolor(
+                          newAppConfig?.config?.color?.primary
+                        ).toHexString(),
+                        "#FFFFFF",
+                        9
+                      )
+                      .toHexString() || "#DDE2E5",
+          "--primary-light-color": tinycolor
+                .mix(
+                  tinycolor(newAppConfig?.config?.color?.primary).toHexString(),
+                  "#FFFFFF",
+                  90
+                )
+                .toHexString(),
+          "--secondary-color": tinycolor(newAppConfig?.config?.color?.secondary).toHexString() || "#E1D6AE",
+          "--accent-color": tinycolor(newAppConfig?.config?.color?.accent).toHexString() || "#DDE2E5",
+          "--background-color": tinycolor(newAppConfig?.config?.color?.background).toHexString() || "#FFFFFF",
+          "--typography-color": tinycolor(newAppConfig?.config?.color?.typography).toHexString() || "#212429",
+          "--top-navbar-color": tinycolor(newAppConfig?.config?.color?.header).isLight() ? tinycolor(
+              newAppConfig?.config?.color?.typography
+                  ).toHexString() || "#212429"
+              : "#FFFFFF",
+          "--top-navbar-background-color": tinycolor(newAppConfig?.config?.color?.header).toHexString() || "#FFFFFF",
+          "--top-navbar-border-color": tinycolor(newAppConfig?.config?.color?.headerBorder).toHexString() || "#DDE2E5",
+          "--side-navbar-color": tinycolor(newAppConfig?.config?.color?.sidebar).isLight() ? tinycolor(newAppConfig?.config?.color?.typography).toHexString() || "#212429" : "#FFFFFF",
+          "--side-navbar-background-color": tinycolor(newAppConfig?.config?.color?.sidebar).toHexString() || "#E1D6AE",
+          "--side-navbar-hover-background-color": tinycolor(newAppConfig?.config?.color?.sidebar).isLight()
+              ? tinycolor
+                  .mix(
+                      tinycolor(
+                          newAppConfig?.config?.color?.sidebar
+                      ).toHexString(),
+                      "#000000",
+                      6
+                  )
+                  .toHexString() || "#E1D6AE"
+              : tinycolor
+                  .mix(
+                      tinycolor(
+                          newAppConfig?.config?.color?.sidebar
+                      ).toHexString(),
+                      "#FFFFFF",
+                      6
+                  )
+                  .toHexString() || "#FFFFFF",
+      };
+      setCssVariables(crudCssVariables);
+
+      ZelthyRJSF(".zelthy-dynamic-form", {
+                      "get_data": {
+                          "is_api_based": true,
+                          "url": `./?action=initialize_form`,
+                          "static_config": {},
+                      },
+                      "post_data": {
+                          "http_method": "POST",
+                          "url": `./?form_type=create_form`,
+                          "payload_type": "FORMDATA"
+                      }
+                  })
+    })
+</script>
+
+<script>
+    var csrf_token = "{{ csrf_token }}";
+</script>
+
+{% block load_zform_lib %}
+
+ <script src="{% zstatic 'packages/crud/js/zfrom_lib.v1.0.38.min.js' %}"></script>
+
+{% endblock %}
+
+{% endblock %}

@@ -1,0 +1,231 @@
+{
+  "json_schema": {
+    "title": "Configure Frame Package",
+    "type": "object",
+    "required": ["user_role"],
+    "properties": {
+      "user_role": {
+        "type": "integer",
+        "title": "Select Role"
+      },
+      "menu": {
+        "type": "array",
+        "title": "Menu",
+        "items": {
+          "type": "object",
+          "required": ["name"],
+          "properties": {
+            "name": {
+              "type": "string",
+              "title": "Name"
+            },
+            "url": {
+              "type": "string",
+              "title": "URL",
+              "default": ""
+            },
+            "icon": {
+              "type": "string",
+              "title": "Icon"
+            },
+            "children": {
+              "type": "array",
+              "title": "SubMenu",
+              "items": {
+                "type": "object",
+                "required": ["name"],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "title": "Name"
+                  },
+                  "url": {
+                    "type": "string",
+                    "title": "URL",
+                    "default": ""
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "config": {
+        "title": "Config",
+        "type": "object",
+        "properties": {
+          "color": {
+            "title": "color",
+            "type": "object",
+            "properties": {
+              "primary": {
+                "type": "string",
+                "title": "Primary",
+                "default": "#5048ED",
+                "ui:classNames": "border-b-2 border-red-100 col-span-3"
+              },
+              "accent": {
+                "type": "string",
+                "title": "Accent",
+                "default": "#DDE2E5",
+                "ui:classNames": "border-b-2 border-red-100 col-span-3"
+              },
+              "header": {
+                "type": "string",
+                "title": "Header",
+                "default": "#FFFFFF"
+              },
+              "sidebar": {
+                "type": "string",
+                "title": "Sidebar",
+                "default": "#E1D6AE"
+              },
+              "secondary": {
+                "type": "string",
+                "title": "Secondary",
+                "default": "#E1D6AE"
+              },
+              "background": {
+                "type": "string",
+                "title": "Background",
+                "default": "#FFFFFF"
+              },
+              "typography": {
+                "type": "string",
+                "title": "Typography",
+                "default": "#212429"
+              },
+              "headerBorder": {
+                "type": "string",
+                "title": "Header Border",
+                "default": "#DDE2E5"
+              }
+            }
+          }
+        }
+      },
+      "scripts": {
+        "type": "array",
+        "title": "Scripts",
+        "items": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "ui_schema": {
+    "user_role": {
+      "ui:widget": "SelectFieldWidget",
+      "ui:placeholder": "Select Role",
+      "ui:errorMessages": {
+        "required": "This field is required."
+      }
+    },
+    "menu": {
+      "items": {
+        "name": {
+          "ui:tooltip": "Menu Title",
+          "ui:classNames": "col-span-12 sm:col-span-6",
+          "ui:widget": "TextFieldWidget",
+          "ui:placeholder": "Enter Menu Title",
+          "ui:errorMessages": {
+            "required": "This field is required."
+          }
+        },
+        "url": {
+          "ui:tooltip": "Menu URL",
+          "ui:classNames": "col-span-12 sm:col-span-6",
+          "ui:widget": "TextFieldWidget",
+          "ui:placeholder": "Enter Menu URL",
+          "ui:errorMessages": {
+            "required": "This field is required."
+          }
+        },
+        "icon": {
+          "ui:tooltip": "Menu Icon (SVG Code)",
+          "ui:classNames": "col-span-12",
+          "ui:widget": "TextareaFieldWidget",
+          "ui:placeholder": "Enter SVG Code",
+          "ui:errorMessages": {
+            "required": "This field is required."
+          }
+        },
+        "children": {
+          "ui:classNames": "rounded-[6px] p-[16px] col-span-12 border",
+          "items": {
+            "name": {
+              "ui:tooltip": "Menu URL",
+              "ui:widget": "TextFieldWidget",
+              "ui:placeholder": "Enter Menu Title",
+              "ui:classNames": "col-span-6"
+            },
+            "url": {
+              "ui:tooltip": "Menu URL",
+              "ui:widget": "TextFieldWidget",
+              "ui:placeholder": "Enter Menu URL",
+              "ui:classNames": "col-span-6"
+            },
+            "icon": {
+              "ui:tooltip": "Menu Icon (SVG Code)",
+              "ui:placeholder": "Enter SVG Code",
+              "ui:widget": "TextareaFieldWidget",
+              "ui:classNames": "col-span-6"
+            }
+          }
+        }
+      }
+    },
+    "config": {
+      "color": {
+        "ui:classNames": "rounded-[6px] p-[16px] col-span-12 border",
+        "ui:title": "Theme Colors",
+        "primary": {
+          "ui:widget": "color",
+          "ui:classNames": "col-span-12 sm:col-span-6",
+          "ui:placeholder": "Choose color"
+        },
+        "accent": {
+          "ui:widget": "color",
+          "ui:classNames": "col-span-12 sm:col-span-6",
+          "ui:placeholder": "Choose color"
+        },
+        "header": {
+          "ui:widget": "color",
+          "ui:classNames": "col-span-12 sm:col-span-6",
+          "ui:placeholder": "Choose color"
+        },
+        "sidebar": {
+          "ui:widget": "color",
+          "ui:classNames": "col-span-12 sm:col-span-6",
+          "ui:placeholder": "Choose color"
+        },
+        "secondary": {
+          "ui:widget": "color",
+          "ui:classNames": "col-span-12 sm:col-span-6",
+          "ui:placeholder": "Choose color"
+        },
+        "background": {
+          "ui:widget": "color",
+          "ui:classNames": "col-span-12 sm:col-span-6",
+          "ui:placeholder": "Choose color"
+        },
+        "typography": {
+          "ui:widget": "color",
+          "ui:classNames": "col-span-12 sm:col-span-6",
+          "ui:placeholder": "Choose color"
+        },
+        "headerBorder": {
+          "ui:widget": "color",
+          "ui:classNames": "col-span-12",
+          "ui:placeholder": "Choose color"
+        }
+      }
+    },
+    "scripts": {
+      "items": {
+        "ui:widget": "TextFieldWidget",
+        "ui:placeholder": "Add stringified script"
+      }
+    }
+  }
+}

@@ -1,0 +1,1008 @@
+{% load zstatic %}
+
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Frame</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&family=Source+Sans+3:wght@400;600&display=swap"
+    rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://unpkg.com/@popperjs/core@2"></script>
+</head>
+
+<body>
+  <style>
+    :root {
+      --primary-color: #5048ED;
+    }
+
+    html {
+      overflow: auto;
+    }
+
+    body {
+      font-family: 'Lato', sans-serif;
+    }
+
+    .intro-section {
+      padding: 64px 96px 0px 96px;
+    }
+
+    .intro-detail-section {
+      padding: 0px 96px 0px 96px;
+    }
+
+    .side-section-padding {
+      padding: 0px 96px 0px 96px;
+    }
+
+    .sub-title-padding {
+      padding: 96px 48px 0px 96px;
+    }
+
+    .packages-table {
+      border-collapse: separate;
+      border-spacing: 0px 8px;
+    }
+
+    .package-title {
+      color: #000;
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 22px;
+      font-style: normal;
+      font-weight: 600;
+      line-height: 28px;
+      letter-spacing: -0.2px;
+      margin: 0px;
+    }
+
+    .package-status {
+      color: #0F3F30;
+      font-size: 11px;
+      font-style: normal;
+      font-weight: 700;
+      line-height: 16px;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+      border-radius: 13px;
+      border: 1px solid #A1E9D3;
+      padding: 5px 12px;
+      width: fit-content;
+      background: #E4F9F2
+    }
+
+    .view-docs-anchor-label {
+      font-family: 'Lato', sans-serif;
+      color: #212429 !important;
+      font-size: 12px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 16px;
+      letter-spacing: 0.2px;
+      padding: 4px 0px;
+      border-bottom: 1px solid #000;
+    }
+
+    .view-docs-anchor {
+      text-decoration: none;
+    }
+
+    .packages-table .each-cell {
+      padding-right: 48px;
+    }
+
+    .each-cell-last {
+      width: 100%;
+    }
+
+    .packages-headline {
+      color: #A3ABB1;
+      font-size: 11px;
+      font-style: normal;
+      font-weight: 700;
+      line-height: 16px;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      margin: 0px;
+    }
+
+    .each-cell-label {
+      color: #212429;
+      font-size: 12px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 16px;
+      letter-spacing: 0.2px;
+    }
+
+    .each-cell-install-status {
+      color: #6C747D;
+      font-size: 12px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 16px;
+      letter-spacing: 0.2px;
+    }
+
+    .each-cell-install-status-active {
+      color: #5048ED;
+      font-size: 12px;
+      font-style: normal;
+      font-weight: 700;
+      line-height: 16px;
+      letter-spacing: 0.2px;
+    }
+
+    .each-cell-toggle {
+      color: #6C747D;
+      font-size: 12px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 16px;
+      letter-spacing: 0.2px;
+    }
+
+    .each-header {
+      border-bottom: 4px solid #F0F3F4;
+      padding: 20px 0px;
+      color: var(--neutral-mid-mid-500, #6C747D);
+      font-size: 11px;
+      font-style: normal;
+      font-weight: 700;
+      line-height: 16px;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+    }
+
+    .package-tabs .nav-tabs .nav-link {
+      border: 0px;
+    }
+
+    .nav-tabs {
+      border-top: 1px solid #DDE2E5;
+      border-bottom: 1px solid #DDE2E5;
+    }
+
+    .package-tabs .nav-link {
+      color: #495057;
+      font-size: 12px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 16px;
+      letter-spacing: 0.2px;
+      padding: 12px;
+    }
+
+    .nav-tabs .nav-item.show .nav-link,
+    .nav-tabs .nav-link.active {
+      font-weight: 700;
+      background-color: transparent;
+    }
+
+    .nav-tabs .nav-link:disabled {
+      opacity: 0.23;
+    }
+
+    .nav-link-first {
+      padding: 12px 12px 12px 32px !important;
+    }
+
+    .each-tab-title {
+      font-family: 'Source Sans 3', sans-serif;
+      color: #212429;
+      font-size: 18px;
+      font-style: normal;
+      font-weight: 600;
+      line-height: 24px;
+      letter-spacing: -0.2px;
+    }
+
+    .each-tab-primary-button {
+      display: flex;
+      color: #FFF;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 700;
+      line-height: 20px;
+      letter-spacing: 0.2px;
+      gap: 8px;
+      border-radius: 4px;
+      background: #5048ED;
+      padding: 7px 16px;
+      border: 0px;
+    }
+
+    .each-package-table {
+      width: 100%;
+    }
+
+    .each-package-table .each-cell {
+      border-bottom: 1px solid #F0F3F4;
+      padding: 14px 48px 14px 14px;
+      color: var(--neutral-dark-dark-700, #212429);
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 20px;
+      letter-spacing: 0.2px;
+    }
+
+    .each-package-table .each-header {
+      padding: 14px 48px 14px 14px;
+    }
+
+    .each-package-table .each-cell-status {
+      border-radius: 15px;
+      padding: 3px 8px;
+      color: #1C1E27;
+      font-size: 12px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 16px;
+      letter-spacing: 0.2px;
+    }
+
+    .each-package-table .each-cell-status-active {
+      background: #E4F9F2;
+    }
+
+    .each-package-table .each-cell-status-inactive {
+      background: #FBE0DD;
+    }
+
+    .each-package-table .action-button {
+      color: #5048ED;
+      font-size: 12px;
+      font-style: normal;
+      font-weight: 700;
+      line-height: 20px;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      background-color: transparent;
+      border: 0px;
+      width: max-content;
+    }
+
+    .each-package-table .default-row {
+      color: #495057;
+      font-size: 12px;
+      font-style: normal;
+      font-weight: 700;
+      line-height: 20px;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      background-color: transparent;
+      border: 0px;
+      width: max-content;
+    }
+
+    .each-package-table .first-cell {
+      padding: 14px 48px 14px 96px;
+    }
+
+    .each-frame-role-table .each-header {
+      white-space: nowrap;
+    }
+
+    .package-tabs .tab-pane .show {
+      display: flex;
+      flex-direction: column;
+      gap: 24px
+    }
+
+    .modal-overlay {
+      position: fixed;
+      top: 0px;
+      left: 0px;
+      display: flex;
+      align-items: stretch;
+      justify-content: flex-end;
+      width: 100vw;
+      height: 100vh;
+      background: linear-gradient(126deg, rgba(0, 0, 0, 0.67) 0%, rgba(0, 0, 0, 0.77) 100%);
+      z-index: 126;
+    }
+
+    .modal-content {
+      display: flex;
+      width: 498px;
+      background-color: #FFFFFF;
+      padding: 0px;
+      position: relative;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      border: 0px;
+      background: transparent;
+      cursor: pointer;
+      z-index: 10;
+    }
+
+    .modal-title {
+      color: #000;
+      font-family: Lato;
+      font-size: 22px;
+      font-style: normal;
+      font-weight: 600;
+      line-height: 28px;
+      letter-spacing: -0.2px;
+      margin: 0px;
+    }
+
+    .modal-content-form {
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+      gap: 40px;
+    }
+
+    .modal-content-form-body {
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+      gap: 16px;
+      max-height: calc(100vh - 116px);
+      justify-content: space-between
+    }
+
+    .modal-form-submit-button {
+      position: sticky;
+      bottom: 32px;
+      border: 0px;
+      padding: 12px;
+      border-radius: 4px;
+      background: var(--primary-color);
+      color: #FFF;
+      font-family: Lato;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 700;
+      line-height: 20px;
+      letter-spacing: 0.2px;
+    }
+
+    .each-row-action-box {
+      display: none;
+      align-items: center;
+      /* justify-content: end; */
+      /* background: linear-gradient(270deg,
+            #f5f7f8 50.84%,
+            rgba(245, 247, 248, 0) 100%); */
+    }
+
+    .each-row-action-dropdown-box {
+      position: absolute;
+    }
+
+    .each-row-action-button {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border: 0px;
+      color: var(--primary-color);
+      background-color: transparent;
+      cursor: pointer;
+      width: fit-content;
+      position: relative;
+      /* right: 24px;
+    top: 50%; */
+      z-index: 2;
+    }
+
+    .each-row-action-dropdown {
+      display: none;
+      position: fixed;
+      width: 195px;
+      right: 220px;
+      border-radius: 4px;
+      padding: 4px;
+      background: var(--neutral-light-white, #fff);
+      z-index: 125;
+      box-shadow: 0px 4px 24px 0px rgba(0, 0, 0, 0.16);
+    }
+
+    .each-row-action-dropdown-list {
+      list-style: none;
+    }
+
+    .each-row-action-dropdown-option {
+      display: flex;
+      flex-direction: column;
+      border: 0px;
+      background-color: transparent;
+      cursor: pointer;
+      width: 100%;
+      padding: 8px 12px;
+      border-radius: 2px;
+    }
+
+    .each-row-action-dropdown-option .label {
+      color: var(--neutral-dark-dark-700, #212429);
+      font-family: Lato;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 700;
+      line-height: 20px;
+      text-align: left;
+      letter-spacing: 0.2px;
+    }
+
+    .each-row-action-dropdown-option .description {
+      color: var(--neutral-mid-mid-500, #6c747d);
+      font-family: Lato;
+      font-size: 12px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 16px;
+      letter-spacing: 0.2px;
+      text-align: left;
+    }
+
+    .each-row-action-dropdown-option:focus,
+    .each-row-action-dropdown-option:active,
+    .each-row-action-dropdown-option:hover {
+      background-color: #f0f3f4;
+    }
+
+    .switch {
+      position: relative;
+      display: flex;
+      width: 26px;
+      height: 16px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .switch-label {
+      padding: 0px 0px 0px 34px;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #fff;
+      -webkit-transition: .4s;
+      transition: .4s;
+      border: 1px solid #6C747D;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 8px;
+      width: 8px;
+      left: 4px;
+      bottom: 3px;
+      background-color: #495057;
+      -webkit-transition: .4s;
+      transition: .4s;
+      box-shadow: 0px 0px 2px 0px #00000040;
+    }
+
+    input:checked+.slider {
+      background-color: #495057;
+      border: 1px solid #495057;
+    }
+
+    input:checked+.slider:before {
+      -webkit-transform: translateX(10px);
+      -ms-transform: translateX(10px);
+      transform: translateX(10px);
+      background-color: #fff;
+    }
+
+    .slider.round {
+      border-radius: 34px;
+    }
+
+    .slider.round:before {
+      border-radius: 50%;
+    }
+
+    .empty-state {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: calc(100vh - 200px);
+      text-align: center;
+      font-family: "Source Sans Pro";
+      font-size: 64px;
+      font-style: normal;
+      font-weight: 700;
+      line-height: 72px;
+      /* 112.5% */
+      text-transform: lowercase;
+      opacity: 0.38;
+      background: linear-gradient(76deg, #B084CC -7.86%, #27929C 98.17%);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .frame-roles {
+      display: flex;
+      flex-direction: column;
+      padding: 64px 48px 0px 96px;
+      gap: 24px;
+    }
+
+    .each-frame-role {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .each-frame-role-title {
+      color: #000;
+      font-feature-settings: 'clig' off, 'liga' off;
+      font-family: "Source Sans Pro";
+      font-size: 18px;
+      font-style: normal;
+      font-weight: 600;
+      line-height: 24px;
+      letter-spacing: -0.2px;
+    }
+
+    .each-frame-role-configure-button {
+      display: flex;
+      gap: 8px;
+      color: #5048ED;
+      font-feature-settings: 'clig' off, 'liga' off;
+      font-family: Lato;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 700;
+      line-height: 20px;
+      letter-spacing: 0.2px;
+    }
+
+    .each-frame-role-delete-button {
+      display: flex;
+      gap: 8px;
+      color: #AA2113;
+      font-feature-settings: 'clig' off, 'liga' off;
+      font-family: Lato;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 700;
+      line-height: 20px;
+      letter-spacing: 0.2px;
+    }
+
+    .delete-confirm-btn {
+      background-color: #5048ED;
+      color: white;
+    }
+
+    .delete-cancel-btn {
+      color: #5048ED;
+    }
+
+    #delete-frame-name {
+      font-weight: 700;
+      color: #5048ED;
+    }
+
+    #zelthy-dynamic-form .array-item-add button {
+      border: none;
+      padding: 0;
+    }
+
+    #zelthy-dynamic-form .array-item-add button:hover {
+      background-color: transparent;
+    }
+
+    .each-frame-role-table tbody tr:nth-child(odd) {
+      background-color: #F0F3F4;
+    }
+
+    .each-frame-role-table tbody tr:first-child { 
+      background-color: #fff; 
+    }
+
+    .each-frame-role-table tbody tr{
+      height: 48px;
+    }
+
+  </style>
+  <div class="overlay-spinner" style="display: none;"></div>
+  <main class="package-main d-flex flex-column" style="gap: 32px;">
+    <section class="d-flex flex-column" style="gap: 24px;">
+      <div class="package-tabs d-flex flex-column" style="gap: 24px;">
+        <div class="tab-content" id="myTabContent">
+          <div class="tab-pane show active fade" id="email" role="tabpanel" aria-labelledby="email-tab">
+            <div class="d-flex justify-content-between align-items-start sub-title-padding">
+              <!-- <h4 class="each-tab-title">Email</h4> -->
+              <div class="d-flex flex-column" style="gap: 4px;">
+                <h2 class="package-title">
+                  Frame Package
+                </h2>
+                <span class="package-status">Installed</span>
+              </div>
+              <button type="button" class="each-tab-primary-button new-frame-config-button form-modal-button"
+                data-modal="package-dynamic-form-modal">
+                <span class="each-tab-primary-label">
+                  New Frame Config
+                </span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                  <path
+                    d="M12.3077 15.5656C13.1721 15.5656 14.0008 15.2225 14.6116 14.6116C15.2225 14.0008 15.5656 13.1721 15.5656 12.3077V3.25792C15.5656 2.39355 15.2225 1.56482 14.6116 0.953971C14.0008 0.343124 13.1721 0 12.3077 0H3.25792C1.45895 0 0 1.45895 0 3.25792V12.3077C0 13.1721 0.343098 14.0008 0.953971 14.6116C1.56484 15.2225 2.39355 15.5656 3.25792 15.5656H12.3077ZM20 3.25792V14.2986C20 15.8105 19.3993 17.2613 18.3303 18.3304C17.2613 19.3995 15.8105 20 14.2986 20H3.25787C2.80786 20 2.44339 19.6356 2.44339 19.1856C2.44339 18.7356 2.80786 18.3711 3.25787 18.3711H14.2986C15.3788 18.3711 16.4142 17.9425 17.1778 17.1779C17.9424 16.4143 18.371 15.3789 18.371 14.2987V3.25794C18.371 2.80793 18.7355 2.44346 19.1855 2.44346C19.6355 2.44346 20 2.80791 20 3.25792ZM3.71041 7.7828C3.71041 7.7828 4.07488 6.96833 4.52489 6.96833C4.9749 6.96833 6.96833 6.96833 6.96833 6.96833V4.52489C6.96833 4.07488 7.3328 3.71041 7.78281 3.71041C8.23282 3.71041 8.59729 4.07488 8.59729 4.52489V6.96833H11.0407C11.4907 6.96833 11.8552 7.33279 11.8552 7.7828C11.8552 8.23281 11.4907 8.59729 11.0407 8.59729H8.59729V11.0407C8.59729 11.4907 8.23282 11.8552 7.78281 11.8552C7.3328 11.8552 6.96833 11.4907 6.96833 11.0407V8.59729C6.96833 8.59729 4.9749 8.59729 4.52489 8.59729C4.07488 8.59729 3.71041 7.7828 3.71041 7.7828Z"
+                    fill="white" />
+                </svg>
+              </button>
+            </div>
+            <div class="each-package-table"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <div id="package-dynamic-form-modal" class="modal-overlay" style="display:none;">
+      <div class="modal-content">
+        <button type="button" data-modal="package-dynamic-form-modal" class="modal-close">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <g clip-path="url(#clip0_5158_6104)">
+              <path
+                d="M17.7213 1.22117L10.5168 8.42571C10.2219 8.72061 9.75409 8.72061 9.48417 8.42571L2.27865 1.22117C1.98375 0.926275 1.51593 0.926275 1.24601 1.22117C0.951112 1.51607 0.951112 1.9839 1.24601 2.25382L8.45153 9.45933C8.74643 9.75423 8.74643 10.2221 8.45153 10.492L1.22117 17.7213C0.926275 18.0162 0.926275 18.4841 1.22117 18.754C1.51607 19.0489 1.9839 19.0489 2.25382 18.754L9.45933 11.5485C9.75423 11.2536 10.2221 11.2536 10.492 11.5485L17.7213 18.7788C18.0162 19.0737 18.4841 19.0737 18.754 18.7788C19.0489 18.4839 19.0489 18.0161 18.754 17.7462L11.5736 10.5158C11.2787 10.2209 11.2787 9.7531 11.5736 9.48319L18.7791 2.27767C19.074 1.98277 19.074 1.51494 18.7791 1.24503C18.4842 0.950129 18.0173 0.950129 17.7214 1.22101L17.7213 1.22117Z"
+                fill="black" stroke="black" stroke-width="0.4" />
+            </g>
+            <defs>
+              <clipPath id="clip0_5158_6104">
+                <rect width="20" height="20" fill="white" />
+              </clipPath>
+            </defs>
+          </svg>
+        </button>
+        <div id="zelthy-dynamic-form" class="zelthy-dynamic-form" style="height: 100%;"></div>
+      </div>
+    </div>
+
+<div class="modal fade" id="delete-confirm-modal" tabindex="-1" aria-labelledby="delete-confirm-modal" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="delete-confirm-modal">Delete </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+       Are you sure want to delete frame config for <span id="delete-frame-name"></span>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="delete-cancel-btn" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="each-tab-primary-button" id="delete-frame-button">Confirm</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+  </main>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+    integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+    integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+    crossorigin="anonymous"></script>
+  <script>
+    const querystring = window.location.search;
+    const urlParams = new URLSearchParams(querystring);
+    const token = urlParams.get('token');
+    $(document).ready(function () {
+      $(document).find(".new-frame-config-button").attr("data-z-form-config", JSON.stringify({
+        "get_data": {
+          "is_api_based": true,
+          "url": `/frame/configure/api/?action=initialize_form&token=${token}`,
+          "static_config": {}
+        },
+        "post_data": {
+          "http_method": "POST",
+          "url": `/frame/configure/api/?action=create_config&token=${token}`,
+          "payload_type": "FORMDATA"
+        }
+      })
+      );
+      fetch(`/frame/configure/api/?action=get_configs&token=${token}`)
+        .then(response => response.json())
+        .then(({ success, response }) => {
+          if (success) {
+            console.log(response, typeof response);
+
+            let frameRoles = `<div class="frame-roles">
+                ${response?.map(eachData => {
+              return `<div class="each-frame-role-box">
+                    <div class="each-frame-role">
+                      <h4 class="each-frame-role-title">
+                        ${eachData?.user_role}
+                      </h4>
+                      <button type="button"
+                          class="each-frame-role-configure-button form-modal-button"
+                          data-modal="package-dynamic-form-modal" data-key="" data-type=""
+                          data-option-data='' data-z-form-config='{
+                              "get_data":{
+                                  "is_api_based":true,
+                                  "url":"/frame/configure/api/?action=get_edit_form_schema&pk=${eachData?.pk}&token=${token}",
+                                  "static_config":{}
+                              },
+                              "post_data":{
+                                  "http_method":"PUT",
+                                  "url":"/frame/configure/api/?action=update_config&pk=${eachData?.pk}&token=${token}",
+                                  "payload_type":"FORMDATA"
+                              }
+                              }'>
+                          <span class="label">Configure</span>
+                          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <g id="Group">
+                            <path id="Vector" d="M9.00005 4.15381C7.71495 4.15381 6.48183 4.66439 5.57308 5.57302C4.66434 6.48166 4.15387 7.71485 4.15387 8.99999C4.15387 10.2851 4.66445 11.5182 5.57308 12.427C6.48172 13.3357 7.71491 13.8462 9.00005 13.8462C10.2852 13.8462 11.5183 13.3356 12.427 12.427C13.3358 11.5183 13.8462 10.2851 13.8462 8.99999C13.8445 7.71489 13.3339 6.48354 12.4253 5.5748C11.5166 4.66614 10.2852 4.15558 9.00007 4.15383L9.00005 4.15381ZM9.00005 12.4615C8.08189 12.4615 7.20178 12.0972 6.55272 11.4473C5.90282 10.7982 5.5385 9.91813 5.5385 8.99993C5.5385 8.08172 5.90282 7.20166 6.55272 6.5526C7.20176 5.90269 8.08184 5.53838 9.00005 5.53838C9.91826 5.53838 10.7983 5.90269 11.4474 6.5526C12.0973 7.20164 12.4616 8.08172 12.4616 8.99993C12.4607 9.91722 12.0955 10.7973 11.4465 11.4464C10.7975 12.0954 9.91739 12.4606 9.00007 12.4615L9.00005 12.4615Z" fill="#5048ED"/>
+                            <path id="Vector_2" d="M16.5211 6.70506C16.3437 6.66093 16.2 6.53112 16.1377 6.35891C16.0702 6.17458 15.9949 5.99373 15.9136 5.81632C15.8365 5.6493 15.8487 5.45459 15.9438 5.29797C16.4042 4.53211 16.2831 3.55249 15.6513 2.92153L15.0767 2.34604C14.4441 1.71258 13.4619 1.59317 12.6961 2.057C12.5394 2.15046 12.3473 2.16085 12.182 2.08469C12.0038 2.00335 11.8229 1.92806 11.6395 1.86056C11.4664 1.79653 11.3366 1.65028 11.2933 1.47114C11.0761 0.605774 10.2981 -0.000863076 9.40678 9.21718e-07H8.59331C7.6985 9.21718e-07 6.91966 0.610094 6.70506 1.47894C6.66092 1.65635 6.53112 1.8 6.35891 1.86231C6.17458 1.92981 5.99372 2.0051 5.81632 2.08644C5.6493 2.16346 5.45459 2.15135 5.29796 2.05616C4.53211 1.59664 3.55249 1.71694 2.92153 2.34865L2.34604 2.92328C1.71344 3.55588 1.59403 4.53809 2.057 5.30392C2.15046 5.46056 2.16085 5.65267 2.08469 5.81796C2.00335 5.99622 1.92806 6.17709 1.86056 6.36055C1.79653 6.53362 1.65027 6.66343 1.47114 6.7067C0.605773 6.92391 -0.000863075 7.70189 9.21718e-07 8.59323V9.40669C9.21718e-07 10.3015 0.610093 11.0803 1.47894 11.2949C1.65548 11.3382 1.79913 11.4672 1.86231 11.6376C1.92981 11.822 2.0051 12.0037 2.08731 12.182C2.16346 12.349 2.15221 12.5437 2.05615 12.7003C1.59578 13.4653 1.71694 14.4458 2.34865 15.0768L2.92327 15.6522V15.6514C3.55588 16.284 4.53722 16.4034 5.30303 15.9421C5.45967 15.847 5.65264 15.8366 5.81793 15.9136C5.9962 15.9958 6.17706 16.0711 6.36311 16.1403V16.1394C6.53532 16.2035 6.66513 16.348 6.70926 16.5271C6.92475 17.3916 7.70186 17.9991 8.5932 18H9.40666C10.3006 18 11.0794 17.3908 11.2941 16.5237C11.3382 16.3463 11.468 16.2017 11.6402 16.1394C11.8254 16.0702 12.0054 15.9958 12.1837 15.9127V15.9136C12.3515 15.8365 12.5454 15.8478 12.7029 15.9439C13.4679 16.4051 14.4492 16.2848 15.0793 15.6514L15.6548 15.0767C16.2866 14.4441 16.4068 13.4619 15.9439 12.6961C15.8504 12.5394 15.84 12.3473 15.9162 12.1821C15.9975 12.0038 16.0728 11.8229 16.1403 11.6395C16.2043 11.4664 16.3506 11.3366 16.5297 11.2933C17.3942 11.0761 18.0009 10.2981 18 9.40678V8.59332C18 7.6985 17.3899 6.91966 16.5211 6.70506V6.70506ZM16.6154 9.40517C16.6154 9.66479 16.4371 9.88978 16.1853 9.95035C15.5639 10.1053 15.0594 10.5578 14.8379 11.1593C14.7825 11.3099 14.7219 11.4578 14.6544 11.6024C14.3879 12.1856 14.426 12.8624 14.7566 13.4119C14.889 13.6317 14.8543 13.9147 14.6717 14.0964L14.0971 14.671C13.9145 14.8536 13.6298 14.8874 13.4091 14.7532C12.8605 14.4235 12.1838 14.3863 11.6013 14.6546C11.4551 14.7238 11.3071 14.7835 11.1557 14.8398V14.8406C10.556 15.063 10.1042 15.5675 9.9502 16.1889C9.8879 16.439 9.66376 16.6138 9.40675 16.6138H8.59329C8.33539 16.6138 8.1104 16.4373 8.04897 16.1854C7.89406 15.5658 7.44406 15.0622 6.84522 14.8406C6.69378 14.7844 6.54579 14.7229 6.39955 14.6554H6.39869C5.81629 14.3863 5.13696 14.4235 4.58744 14.755C4.36677 14.8874 4.08466 14.8527 3.90293 14.671L3.32831 14.0964C3.14312 13.9121 3.10937 13.6256 3.24523 13.4041C3.57581 12.8563 3.61303 12.1804 3.34561 11.5989C3.27638 11.4544 3.21754 11.3064 3.16215 11.155C2.93975 10.5526 2.4335 10.0992 1.80956 9.94603C1.56205 9.88372 1.38726 9.66219 1.38465 9.40689V8.59343C1.38465 8.33467 1.56292 8.10881 1.81474 8.04825C2.43695 7.89334 2.94146 7.44074 3.16213 6.83845C3.21665 6.68787 3.27809 6.54075 3.34386 6.3971H3.34473C3.61212 5.8147 3.57406 5.13711 3.24348 4.58758C3.11107 4.36691 3.14569 4.0848 3.32828 3.90307L3.90291 3.32845C4.08551 3.14499 4.37022 3.11037 4.59176 3.24537C5.13955 3.57509 5.8154 3.61228 6.39607 3.34576C6.54059 3.27653 6.68857 3.21768 6.83915 3.1623C7.44146 2.93989 7.89491 2.43277 8.04981 1.8097C8.11211 1.56047 8.33625 1.38479 8.59326 1.38479H9.40672C9.66548 1.38479 9.89134 1.56306 9.95191 1.81488C10.1068 2.43709 10.5594 2.9416 11.1617 3.16227C11.3123 3.21679 11.4594 3.27824 11.6039 3.34487V3.34574C12.1863 3.61313 12.8639 3.57507 13.4126 3.24362C13.6332 3.11122 13.9162 3.14583 14.0971 3.32843L14.6717 3.90305C14.8552 4.08565 14.8889 4.37036 14.7548 4.5919C14.4251 5.1397 14.3879 5.81554 14.6544 6.39622C14.7236 6.54073 14.7825 6.68871 14.8379 6.83929C15.0603 7.44161 15.5674 7.89505 16.1905 8.04995C16.4397 8.11226 16.6154 8.3364 16.6154 8.5934L16.6154 9.40517Z" fill="#5048ED"/>
+                            </g>
+                          </svg>
+                      </button>
+                      <button type="button"
+                          class="each-frame-role-delete-button form-modal-button frame-delete-btn"
+                          data-bs-toggle="modal" data-bs-target="#delete-confirm-modal" data-primary-key="${eachData?.pk}" data-frame-data='${JSON.stringify(eachData)}''>
+                          <span class="label">Delete Config</span>
+                          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M2.46426 3.8H3.39283V13.3573C3.39515 14.2632 4.12582 14.9976 5.02712 15H11.9914C12.8857 14.9872 13.6048 14.2562 13.6071 13.3573V3.8H14.5357C14.7922 3.8 15 3.59117 15 3.33333C15 3.07549 14.7922 2.86667 14.5357 2.86667H11.2857V1.93333C11.2857 1.427 10.8841 1.01283 10.3803 1H6.64287C6.12983 1 5.71429 1.41767 5.71429 1.93333V2.86667H2.46429C2.20776 2.86667 2 3.07549 2 3.33333C2 3.59117 2.20776 3.8 2.46429 3.8H2.46426ZM6.64284 1.93333H10.3571V2.86667H6.64284V1.93333ZM5.71426 3.8H12.6786V13.3573C12.6786 13.7493 12.3629 14.0667 11.9728 14.0667H5.00855C4.62609 14.0567 4.3214 13.7417 4.3214 13.3573V3.8H5.71426Z" fill="#AA2113" stroke="#AA2113" stroke-width="0.3"/>
+                          </svg>
+                      </button>
+                    </div>
+                    <table class="each-frame-role-table">
+                      <tr>
+                        <th class="each-header" style="width:30%">Menu Name</th>
+                        <th class="each-header">Icon</th>
+                        <th class="each-header"  style="width:45%">Url</th>
+                        <th class="each-header"></th>
+                      </tr>
+                      ${eachData?.config?.menu?.map(eachMenu => {
+                      let subMenu = eachMenu?.children ? eachMenu?.children?.map(eachSubmenu => {
+                        return `<div>
+                          <tr>
+                            <td class="each-cell" style="padding-left: 40px;">
+                              <div style="display: flex; gap: 14px; align-items: center;">
+                                <svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                  <circle cx="4" cy="4" r="4" fill="#5048ED"/>
+                                </svg>
+
+                                ${eachSubmenu?.name}</td>
+                              </div>
+                            <td class="each-cell">${eachSubmenu?.icon ? eachSubmenu?.icon : "-"}</td>
+                            <td class="each-cell">${eachSubmenu?.url == undefined || eachSubmenu.url == null ? "N/A" : eachSubmenu.url}</td>
+                            <td class="each-cell each-cell-last">
+                          </tr>
+                        </div>`
+                }).join("") : ""
+                return `<tr>
+                          <td class="each-cell">${eachMenu?.name}</td>
+                          <td class="each-cell">${eachMenu?.icon ? eachMenu?.icon : "-"}</td>
+                          ${subMenu !== "" ? `<td class="each-cell">-</td>`: `<td class="each-cell">${eachMenu?.url == undefined || eachMenu.url == null ? "N/A" : eachMenu.url}</td>`}
+                          
+                          <td class="each-cell each-cell-last">
+                        </tr>
+                        ${subMenu}`
+              }).join("")}
+                    </table>
+                  </div>
+                  `
+            }).join("")}
+            </div>`
+
+
+            let frameRows = response?.map(eachData => {
+              return `<tr>
+                                <td class="first-cell each-cell">${eachData?.user_role}</td>
+                                <td class="each-cell">${JSON.stringify(eachData?.config).substring(0, 10)}....</td>
+                                <td class="each-cell each-cell-last">
+                                </td>
+                                <td class="each-cell each-cell-last">
+                                    <div class="each-row-action-box">
+                                        <div class="each-row-action-dropdown-box">
+                                            <button type="button" class="each-row-action-button">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                                                    viewBox="0 0 20 20" fill="none">
+                                                    <circle cx="10" cy="16" r="2" transform="rotate(-90 10 16)"
+                                                        fill="#6C747D" />
+                                                    <circle cx="10" cy="10" r="2" transform="rotate(-90 10 10)"
+                                                        fill="#6C747D" />
+                                                    <circle cx="10" cy="4" r="2" transform="rotate(-90 10 4)"
+                                                        fill="#6C747D" />
+                                                </svg>
+                                            </button>
+                                            <ul class="each-row-action-dropdown">
+                                                <li class="each-row-action-dropdown-list">
+                                                    <button type="button"
+                                                        class="each-row-action-dropdown-option form-modal-button"
+                                                        data-modal="package-dynamic-form-modal" data-key="" data-type=""
+                                                        data-option-data='' data-z-form-config='{
+                                                            "get_data":{
+                                                                "is_api_based":true,
+                                                                "url":"/frame/configure/api/?action=get_edit_form_schema&pk=${eachData?.pk}&token=${token}",
+                                                                "static_config":{}
+                                                            },
+                                                            "post_data":{
+                                                                "http_method":"PUT",
+                                                                "url":"/frame/configure/api/?action=update_config&pk=${eachData?.pk}&token=${token}",
+                                                                "payload_type":"FORMDATA"
+                                                            }
+                                                            }'>
+                                                        <span class="label">Update</span>
+                                                        <span class="description">Update Config</span>
+                                                    </button>
+                                                </li>
+                                              
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>`
+            }).join("");
+
+            if (frameRows?.length) {
+              // $(document).find(".tab-content").find("#email").find(".each-package-table").html(`<tr>
+              //                   <th class="first-cell each-header">Name</th>
+              //                   <th class="each-header">Config</th>
+              //                   <th class="each-header"></th>
+              //                   <th class="each-header"></th>
+              //                   </tr>`);
+
+              // $(document).find(".tab-content").find("#email").find(".each-package-table").append(frameRows);
+              $(document).find(".tab-content").find("#email").find(".each-package-table").append(frameRoles);
+
+            } else {
+              $(document).find(".tab-content").find("#email").find(".each-package-table").html(`
+                                <div class="empty-state" id="emptyState">
+                                  <span>
+                                    Start configuring Frames
+                                  </span>
+                                </div>`
+              );
+            }
+
+            $(document).find(".frame-delete-btn").on("click", function() {
+              let data = $(this).attr("data-frame-data");
+              $("#delete-frame-name").html("")
+              $("#delete-frame-name").html(JSON.parse(data).user_role)
+              $(document).find("#delete-frame-button").attr("data-primary-key", JSON.parse(data).pk)
+            })
+
+             $(document)
+              .find("#delete-frame-button")
+              .on("click", function (event) {
+                event.preventDefault();
+                let primaryKey = $(this).attr("data-primary-key"); 
+                let url = `/frame/configure/api/?action=delete_config&token=${token}&pk=${primaryKey}`;
+                fetch(url, {
+                  method: 'DELETE',
+                })
+                  .then(response => response.json())
+                  .then(data => {
+                    location.reload();
+                  })
+                  .catch(error => {
+                    console.error(error)
+                  });
+              });
+
+            $(document).find(".form-modal-button").on("click", function () {
+              let modalId = $(this).data("modal");
+              let zFormConfig = $(this).data("z-form-config");
+              $(`#${modalId}`).find(".zelthy-dynamic-form").attr("data-config", JSON.stringify(zFormConfig));
+              if ($(`#${modalId}`).is(":hidden")) {
+                $(`#${modalId}`).css({ "display": "flex" });
+              } else {
+                $(`#${modalId}`).css({ "display": "none" });
+              }
+            });
+
+            $(document).find(".modal-close").on("click", function () {
+              let modalId = $(this).data("modal");
+              $(`#${modalId}`).find(".zelthy-dynamic-form").attr("data-config", JSON.stringify({}));
+              $(`#${modalId}`).css({ "display": "none" });
+              if (modalId === "row_actions_form_modal") {
+                location.reload();
+              }
+            });
+
+            $(document).on("mouseup", function (e) {
+              let container = $(".each-row-action-box");
+              if (
+                !container.is(e.target) &&
+                container.has(e.target).length === 0
+              ) {
+                let is_visible = container.find(".each-row-action-dropdown").attr("data_is_visible");
+                if (is_visible !== 'true') {
+                  container.find(".each-row-action-dropdown").hide();
+                }
+              }
+            });
+
+            $(document)
+              .find(".each-row-action-dropdown-box")
+              .each(function (index) {
+                let button = $(this).find(".each-row-action-button")[0];
+                let tooltip = $(this).find(".each-row-action-dropdown")[0];
+
+                let popperInstance = Popper.createPopper(button, tooltip, {
+                  strategy: "fixed",
+                  modifiers: [
+                    {
+                      name: "offset",
+                      options: {
+                        offset: [10, 0],
+                      },
+                    },
+                  ],
+                });
+                popperInstance.setOptions({ placement: "bottom-end" });
+                $(document).on("click", function (event) {
+                  if (popperInstance) {
+                    popperInstance?.update();
+                  }
+                });
+              });
+
+            $(document)
+              .find("tr")
+              .on("mouseenter click", function () {
+                $(".each-row-action-box").each(function (index) {
+                  let is_visible = $(this).find(".each-row-action-dropdown").attr("data-is-visible");
+                  if (is_visible !== "true") {
+                    $(this).hide();
+                  } else {
+                    $(this).show();
+                  }
+                })
+
+                $(this).find(".each-row-action-box").css({ display: "flex" });
+              });
+
+            $(document)
+              .find(".each-row-action-button")
+              .on("click", function (event) {
+                event.preventDefault();
+                $(".each-row-action-dropdown").attr("data-is-visible", false);
+                $(".each-row-action-dropdown").hide();
+                $(this)
+                  .parents(".each-row-action-box")
+                  .find(".each-row-action-dropdown")
+                  .attr("data-is-visible", true)
+                  .show();
+              });
+          }
+        })
+        .catch(error => {
+          console.error(error)
+        });
+
+    });
+
+  </script>
+  <script>
+    var csrf_token = "{{ csrf_token }}";
+  </script>
+  <script src="{% zstatic 'packages/frame/js/zcustom_frame_from_lib.v1.0.30.min.js' %}"></script>
+  <script>
+    console.log("ZelthyRJSF", ZelthyRJSF)
+  </script>
+</body>
+
+</html>
